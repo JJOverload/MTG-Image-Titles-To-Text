@@ -1,4 +1,5 @@
-#From/based on code located at this link: https://analyticsvidhya.com/blog/2021/11/autocorrect-feature-using-nlp-in-python/
+# From/based on code located at this link: https://analyticsvidhya.com/blog/2021/11/autocorrect-feature-using-nlp-in-python/
+# Also found same code in: https://www.kaggle.com/code/gauravduttakiit/autocorrect-with-python 
 
 import pandas as pd
 import numpy as np
