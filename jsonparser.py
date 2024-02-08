@@ -36,6 +36,18 @@ print(json.dumps(AtomicCards_data["data"]["Abzan Kin-Guard"], indent=4))
 keysList = list(AtomicCards_data["data"].keys())
 print(keysList[:100])
 
+counter = 0
+
+for x in keysList[:100]:
+    print(x, counter)
+    counter = counter + 1
+
+print("--------------------------------------------------------")
+for x in keysList[100:200]:
+    print(x, counter)
+    counter = counter + 1
+
+
 '''
 with open('AllPrintings.json', 'r', encoding="utf8") as AllCards_file:
     AllCards_data = json.load(AllCards_file)
