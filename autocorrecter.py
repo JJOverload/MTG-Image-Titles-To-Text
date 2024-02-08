@@ -1,20 +1,34 @@
-# From/based on code located at this link: https://analyticsvidhya.com/blog/2021/11/autocorrect-feature-using-nlp-in-python/
-# Also found same code in: https://www.kaggle.com/code/gauravduttakiit/autocorrect-with-python 
+# Good code example in: https://www.kaggle.com/code/gauravduttakiit/autocorrect-with-python 
+# cd Documents\GitHub\MTG-Image-Titles-To-Text\
 
 import pandas as pd
 import numpy as np
 import textdistance
 import re
 from collections import Counter
+
 words = []
-with open('auto.txt', 'r') as f:
-    file_name_data = f.read()
-    file_name_data=file_name_data.lower()
-    words = re.findall('w+',file_name_data)
-# This is our vocabulary
+with open('izzet-buylist.txt', 'r') as f:
+    file_data = f.read()
+    file_data = file_data.lower()
+    words = re.findall("\\w+", file_data)
 V = set(words)
-print("Top ten words in the text are:{words[0:10]}")
-print("Total Unique words are {len(V)}.")
-#Output:
-#Top ten words in the text are:['moby', 'dick', 'by', 'herman', 'melville', '1851', 'etymology', 'supplied', 'by', 'a']
-#Total Unique words are 17140.
+print(f"The first sixteen words in the text are: \n{words[0:15]}")
+print(f"There are {len(V)} unique words in the vocabulary.")
+
+#Counter of word frequency
+print("Printing out counter of word frequency of 15 most common words.")
+word_freq_dict = {}
+word_freq_dict = Counter(words)
+print(word_freq_dict.most_common()[0:15])
+
+#Relative Frequency of words
+print("Printing out 15 most common words and their relative frequency within the whole file.")
+probs = {}
+Total = sum(word_freq_dict.values())
+for k in word_freq_dict.keys():
+    probs[k] = word_freq_dict[k]/Total
+for commonWord in word_freq_dict.most_common()[0:15]:
+    print(commonWord, probs[commonWord[0]])
+
+#Finding Similar Words
