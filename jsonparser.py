@@ -28,8 +28,7 @@ print(CardTypes_data["data"]["types"]["artifact"]["subTypes"])
 
 with open('AtomicCards.json', 'r', encoding="utf8") as AtomicCards_file:
     AtomicCards_data = json.load(AtomicCards_file)
-    #print(AtomicCards_data)
-#print(json.dumps(AtomicCards_data, indent=4))
+
 #print(AtomicCards_data["data"]["Abzan Kin-Guard"])
 print(json.dumps(AtomicCards_data["data"]["Abzan Kin-Guard"], indent=4))
 
