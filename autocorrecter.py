@@ -1,4 +1,5 @@
-# Good code example in: https://www.kaggle.com/code/gauravduttakiit/autocorrect-with-python 
+# Good code example in:
+# https://www.kaggle.com/code/gauravduttakiit/autocorrect-with-python
 # cd Documents\GitHub\MTG-Image-Titles-To-Text\
 
 import pandas as pd
@@ -32,3 +33,16 @@ for commonWord in word_freq_dict.most_common()[0:15]:
     print(commonWord, probs[commonWord[0]])
 
 #Finding Similar Words
+def mtg_autocorrect(input_word):
+    input_word = input_word.lower()
+    if input_word in V:
+        return("Your word seems to be correct")
+    else:
+        similarities = [1-(textdistance.Jaccard(qval=2).distance(v,input_word)) for v in word_freq_dict.keys()]
+        df = pd.DataFrame.from_dict(probs, orient='index').reset_index()
+        df = df.rename(columns={'index':'Word', 0:'Prob'})
+        df['Similarity'] = similarities
+        output = df.sort_values(['Similarity', 'Prob'], ascending=False).head()
+        return(output)
+
+print(mtg_autocorrect('arcane signet'))
