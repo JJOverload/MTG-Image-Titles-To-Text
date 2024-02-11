@@ -8,48 +8,58 @@ import textdistance
 import re
 from collections import Counter
 
-words = []
+import json
+
+names = []
 '''
 with open('izzet-buylist.txt', 'r') as f:
     file_data = f.read()
     file_data = file_data.lower()
-    words = re.findall("\\w+", file_data)
+    names = re.findall("\\w+", file_data)
+'''
 '''
 with open('izzet-buylist.txt', 'r') as f:
-    words = f.readlines()
+    names = f.readlines()
+'''
+print("-----Opening Atomic Cards JSON------")
+with open('AtomicCards.json', 'r', encoding="utf8") as AtomicCards_file:
+    AtomicCards_data = json.load(AtomicCards_file)
+#AtomicCards_data is a dictionary of dictionaries of...
+names = list(AtomicCards_data["data"].keys())
+#print(names[:100])
 
-V = set(words)
-print(f"The first sixteen words in the text are: \n{words[0:15]}")
-print(f"There are {len(V)} unique words in the vocabulary.")
+V = set(names)
+print(f"-----The first fifteen names in the text are: \n{names[0:15]}-----") #sixteen or fifteen?
+print(f"-----There are {len(V)} unique names in the vocabulary.-----")
 
-#Counter of word frequency
-print("-----Printing out counter of word frequency of 15 most common words.-----")
-word_freq_dict = {}
-word_freq_dict = Counter(words)
-print(word_freq_dict.most_common()[0:15])
+#Counter of name frequency
+print("-----Printing out counter of name frequency of 15 most common names.-----")
+name_freq_dict = {}
+name_freq_dict = Counter(names)
+print(name_freq_dict.most_common()[0:15])
 
-#Relative Frequency of words
-print("-----Printing out 15 most common words and their relative frequency within the whole file.-----")
+#Relative Frequency of names
+print("-----Printing out 15 most common names and their relative frequency within the whole file.-----")
 probs = {}
-Total = sum(word_freq_dict.values())
-for k in word_freq_dict.keys():
-    probs[k] = word_freq_dict[k]/Total
-for commonWord in word_freq_dict.most_common()[0:15]:
-    print(commonWord, probs[commonWord[0]])
+Total = sum(name_freq_dict.values())
+for k in name_freq_dict.keys():
+    probs[k] = name_freq_dict[k]/Total
+for commonName in name_freq_dict.most_common()[0:15]:
+    print(commonName, probs[commonName[0]])
 
-#Finding Similar Words
+#Finding Similar Names
 def mtg_autocorrect(input_word):
-    input_word = input_word.lower()
+    #input_word = input_word.lower()
     if input_word in V:
         return("Your word seems to be correct")
     else:
-        similarities = [1-(textdistance.Jaccard(qval=2).distance(v,input_word)) for v in word_freq_dict.keys()]
+        similarities = [1-(textdistance.Jaccard(qval=2).distance(v,input_word)) for v in name_freq_dict.keys()]
         df = pd.DataFrame.from_dict(probs, orient='index').reset_index()
-        df = df.rename(columns={'index':'Word', 0:'Prob'})
+        df = df.rename(columns={'index':'Name', 0:'Prob'})
         df['Similarity'] = similarities
-        output = df.sort_values(['Similarity', 'Prob'], ascending=False).head()
+        output = df.sort_values(['Similarity', 'Prob'], ascending=False).head(1)#.iat[0,0]
         return(output)
 
-search_word = "arcane signet"
+search_word = "Arcane Signet"
 print("-----Printing out results for " + search_word + "------")
 print(mtg_autocorrect(search_word))
