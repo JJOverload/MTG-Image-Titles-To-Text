@@ -1,6 +1,6 @@
 # MTG-Image-Titles-To-Text
 
-if you don't have it already:
+If you don't have it already:
 `pip install wheel`
 
 then:
@@ -14,6 +14,9 @@ Would need to install the "textdistance" package as well:
 ------------------------------------
 **The Process Plan So Far**
 Good link if one wants to rely on non-online/website link for OCR: https://www.tensorflow.org/lite/examples/optical_character_recognition/overview
+
+C++/Python article that references EAST (An Efficient and Accruate Scene Text Detector) paper:
+https://learnopencv.com/deep-learning-based-text-detection-using-opencv-c-python/
 
 Use this link: https://www.imagetotext.info/jpg-to-word
 
