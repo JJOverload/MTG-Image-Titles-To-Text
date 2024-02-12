@@ -54,6 +54,7 @@ def mtg_autocorrect(input_word):
     if input_word in V:
         return("Your word seems to be correct")
     else:
+        # qval in similarities needs to be 2, meaning input_word needs to be 2 characters or more.
         if len(input_word) == 1:
             input_word = input_word + " "
         elif len(input_word == 0):
