@@ -23,4 +23,6 @@ Then:
 - Run autocorrector.py to have corrections in case missing minor spelling.
 
 
+- StackOverflow on how to install multiple packages with one command: https://stackoverflow.com/questions/9956741/how-to-install-multiple-python-packages-at-once-using-pip
+
 
