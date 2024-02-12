@@ -1,6 +1,7 @@
 # Good code example in:
 # https://www.kaggle.com/code/gauravduttakiit/autocorrect-with-python
 # cd Documents\GitHub\MTG-Image-Titles-To-Text\
+# https://www.imagetotext.info/jpg-to-word
 
 import pandas as pd
 import numpy as np
