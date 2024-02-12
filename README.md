@@ -26,6 +26,7 @@ Then:
 ------------------------------------
 
 **References**
+
 Good link if one wants to rely on non-online/website link for OCR: https://www.tensorflow.org/lite/examples/optical_character_recognition/overview
 
 C++/Python article that references EAST (An Efficient and Accruate Scene Text Detector) paper:
