@@ -32,6 +32,9 @@ Good link if one wants to rely on non-online/website link for OCR: https://www.t
 C++/Python article that references EAST (An Efficient and Accruate Scene Text Detector) paper:
 https://learnopencv.com/deep-learning-based-text-detection-using-opencv-c-python/
 
+- Example code from the above link:
+- https://github.com/spmallick/learnopencv/blob/master/TextDetectionEAST/textDetection.py
+
 StackOverflow on how to install multiple packages with one command: https://stackoverflow.com/questions/9956741/how-to-install-multiple-python-packages-at-once-using-pip
 
 
