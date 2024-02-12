@@ -54,13 +54,19 @@ def mtg_autocorrect(input_word):
     if input_word in V:
         return("Your word seems to be correct")
     else:
+        if len(input_word) == 1:
+            input_word = input_word + " "
+        elif len(input_word == 0):
+            input_word = input_word + "  "
         similarities = [1-(textdistance.Jaccard(qval=2).distance(v,input_word)) for v in name_freq_dict.keys()]
         df = pd.DataFrame.from_dict(probs, orient='index').reset_index()
         df = df.rename(columns={'index':'Name', 0:'Prob'})
         df['Similarity'] = similarities
         output = df.sort_values(['Similarity', 'Prob'], ascending=False).head(1)#.iat[0,0]
+        if output.iat[0,2] <= 0.1:
+            return("This input is noise.")
         return(output)
 
-search_word = "Arcane Signet"
-print("-----Printing out results for " + search_word + "------")
+search_word = "2222"
+print("-----Printing out results for \"" + search_word + "\"------")
 print(mtg_autocorrect(search_word))
