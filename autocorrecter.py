@@ -57,7 +57,7 @@ def mtg_autocorrect(input_word):
         # qval in similarities needs to be 2, meaning input_word needs to be 2 characters or more.
         if len(input_word) == 1:
             input_word = input_word + " "
-        elif len(input_word == 0):
+        elif len(input_word) == 0:
             input_word = input_word + "  "
         similarities = [1-(textdistance.Jaccard(qval=2).distance(v,input_word)) for v in name_freq_dict.keys()]
         df = pd.DataFrame.from_dict(probs, orient='index').reset_index()
@@ -65,9 +65,31 @@ def mtg_autocorrect(input_word):
         df['Similarity'] = similarities
         output = df.sort_values(['Similarity', 'Prob'], ascending=False).head(1)#.iat[0,0]
         if output.iat[0,2] <= 0.1:
-            return("This input is noise.")
+            return("")
         return(output)
 
-search_word = "2222"
-print("-----Printing out results for \"" + search_word + "\"------")
-print(mtg_autocorrect(search_word))
+
+unclean_lines = []
+clean_lines = []
+output = ""
+with open('SampleWebsiteOCR.txt', 'r') as f:
+    unclean_lines = f.readlines()
+print("-----Printing out \"Unclean Lines\"-----")
+print(unclean_lines)
+
+for search_word in unclean_lines:
+    search_word = search_word.strip()
+    print("-----Printing out results for \"" + search_word + "\"------")
+    output = mtg_autocorrect(search_word)
+    if output == "":
+        print("Skipped", search_word)
+    else: #Not skipped, so should be "good"
+        print("Adding", search_word)
+        clean_lines.append(search_word)
+
+print("-----Printing out \"clean Lines\"-----")
+print(clean_lines)
+
+with open('output-from-autocorrector.txt', 'w') as f:
+    for i in range(0, len(clean_lines)):
+        f.write("1 " + clean_lines[i] + "\n")
