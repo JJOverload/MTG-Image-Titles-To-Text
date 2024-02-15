@@ -40,3 +40,6 @@ StackOverflow on how to install multiple packages with one command: https://stac
 
 A good read. Skimmed through the progress made so far by Quentin Fortier. Should be able to learn some stuff from here:
 https://fortierq.github.io/mtgscan-ocr-azure-flask-celery-socketio/
+
+Python OCR with Tesseract:
+https://builtin.com/data-science/python-ocr
