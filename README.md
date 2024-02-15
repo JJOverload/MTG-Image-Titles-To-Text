@@ -46,3 +46,6 @@ https://builtin.com/data-science/python-ocr
 
 Optical Character Recognition Using TensorFlow:
 https://medium.com/analytics-vidhya/optical-character-recognition-using-tensorflow-533061285dd3
+
+Merge the Bounding boxes near by into one (StackOverflow):
+https://stackoverflow.com/questions/55593506/merge-the-bounding-boxes-near-by-into-one
