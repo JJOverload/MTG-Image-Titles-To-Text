@@ -1,7 +1,7 @@
 # Code from: https://learnopencv.com/deep-learning-based-text-detection-using-opencv-c-python/
 # Using this for reference as well: https://learnopencv.com/deep-learning-with-opencvs-dnn-module-a-definitive-guide/
 # https://github.com/spmallick/learnopencv/blob/master/TextDetectionEAST/textDetection.py
-# cd Documents\GitHub\MTG-Image-Titles-To-Text\
+# cd Documents\GitHub\MTG-Image-Titles-To-Text\textdetector
 # python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096
 
 
