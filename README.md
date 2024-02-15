@@ -43,3 +43,6 @@ https://fortierq.github.io/mtgscan-ocr-azure-flask-celery-socketio/
 
 Python OCR with Tesseract:
 https://builtin.com/data-science/python-ocr
+
+Optical Character Recognition Using TensorFlow:
+https://medium.com/analytics-vidhya/optical-character-recognition-using-tensorflow-533061285dd3
