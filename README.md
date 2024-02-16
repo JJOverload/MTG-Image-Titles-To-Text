@@ -37,6 +37,8 @@ For Ubuntu:
 - For the development tools (Tesseract):
 `sudo apt install libtesseract-dev`
 
+For cv2 module in Linux:
+`pip install opencv-python`
 
 **References**
 
