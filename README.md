@@ -14,6 +14,7 @@ Would need to install the "textdistance" package as well:
 
 ------------------------------------
 
+
 **The Process Plan So Far**
 
 Use this link: https://www.imagetotext.info/jpg-to-word
@@ -24,6 +25,18 @@ Then:
 - Run autocorrector.py to have corrections in case missing minor spelling.
 
 ------------------------------------
+
+**Tesseract Route**
+If wanting to pivot with Tesseract. Will need to install it.
+
+For Ubuntu:
+
+- For Tesseract:
+`sudo apt install tesseract-ocr`
+
+- For the development tools (Tesseract):
+`sudo apt install libtesseract-dev`
+
 
 **References**
 
@@ -49,3 +62,7 @@ https://medium.com/analytics-vidhya/optical-character-recognition-using-tensorfl
 
 Merge the Bounding boxes near by into one (StackOverflow):
 https://stackoverflow.com/questions/55593506/merge-the-bounding-boxes-near-by-into-one
+
+Tesseract Installation Guide:
+https://tesseract-ocr.github.io/tessdoc/Installation.html
+
