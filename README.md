@@ -42,6 +42,21 @@ For cv2 module in Linux:
 
 Note: Multiple rotations is needed for each pile, since it is usually not possible to have every card to be in the same orientation. Might need to do additional pivot and allow card by card scanning.
 
+
+
+
+
+
+Idea: Use EAST detector to locate locations of text, isolate the surrounding area of the detected box, then use Tesseract's OSD (Orientation and script detection) to get the proper orientation and then recognize the text. Process image before or during as needed.
+- Source: https://pyimagesearch.com/2022/01/31/correcting-text-orientation-with-tesseract-and-python/
+
+
+
+
+
+
+
+
 **References**
 
 Good link if one wants to rely on non-online/website link for OCR: https://www.tensorflow.org/lite/examples/optical_character_recognition/overview
