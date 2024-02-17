@@ -40,7 +40,7 @@ For Ubuntu:
 For cv2 module in Linux:
 `pip install opencv-python`
 
-Note: Multiple rotations is needed for each pile, since it is usually not possible to have every card to be in the same orientation. Might need to pivot and allow card by card scanning.
+Note: Multiple rotations is needed for each pile, since it is usually not possible to have every card to be in the same orientation. Might need to do additional pivot and allow card by card scanning.
 
 **References**
 
