@@ -164,9 +164,9 @@ if __name__ == "__main__":
                 p1 = (vertices[j][0], vertices[j][1])
                 p2 = (vertices[(j + 1) % 4][0], vertices[(j + 1) % 4][1])
                 p1 = (int(p1[0]), int(p1[1]))
-                print("p1:",p1)
+                #print("p1:",p1)
                 p2 = (int(p2[0]), int(p2[1]))
-                print("p2:",p2)
+                #print("p2:",p2)
 
                 cv.line(frame, p1, p2, (0, 255, 0), 2, cv.LINE_AA)
                 #cv.putText(frame, "{:.3f}".format(confidences[i[0]]), (vertices[0][0], vertices[0][1]), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1, cv.LINE_AA)
