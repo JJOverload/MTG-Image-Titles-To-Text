@@ -14,6 +14,7 @@ Would need to install the "textdistance" package as well:
 
 ------------------------------------
 
+
 **The Process Plan So Far**
 
 Use this link: https://www.imagetotext.info/jpg-to-word
@@ -24,6 +25,22 @@ Then:
 - Run autocorrector.py to have corrections in case missing minor spelling.
 
 ------------------------------------
+
+**Tesseract Route**
+If wanting to pivot with Tesseract. Will need to install it.
+
+For Ubuntu:
+
+- For Tesseract:
+`sudo apt install tesseract-ocr`
+
+- For the development tools (Tesseract):
+`sudo apt install libtesseract-dev`
+
+For cv2 module in Linux:
+`pip install opencv-python`
+
+Note: Multiple rotations is needed for each pile, since it is usually not possible to have every card to be in the same orientation. Might need to do additional pivot and allow card by card scanning.
 
 **References**
 
@@ -46,3 +63,10 @@ https://builtin.com/data-science/python-ocr
 
 Optical Character Recognition Using TensorFlow:
 https://medium.com/analytics-vidhya/optical-character-recognition-using-tensorflow-533061285dd3
+
+Merge the Bounding boxes near by into one (StackOverflow):
+https://stackoverflow.com/questions/55593506/merge-the-bounding-boxes-near-by-into-one
+
+Tesseract Installation Guide:
+https://tesseract-ocr.github.io/tessdoc/Installation.html
+
