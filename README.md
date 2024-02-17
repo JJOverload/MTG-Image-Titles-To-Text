@@ -40,6 +40,8 @@ For Ubuntu:
 For cv2 module in Linux:
 `pip install opencv-python`
 
+Note: Multiple rotations is needed for each pile, since it is usually not possible to have every card to be in the same orientation. Might need to pivot and allow card by card scanning.
+
 **References**
 
 Good link if one wants to rely on non-online/website link for OCR: https://www.tensorflow.org/lite/examples/optical_character_recognition/overview
