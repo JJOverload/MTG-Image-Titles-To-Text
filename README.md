@@ -40,8 +40,19 @@ For Ubuntu:
 - For the development tools (Tesseract):
 `sudo apt install libtesseract-dev`
 
+
+
 For cv2 module in Linux:
 `pip install opencv-python`
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+For Windows (check "Windows" section):
+https://tesseract-ocr.github.io/tessdoc/Installation.html
+
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------------------------------
+
 
 Note: Multiple rotations is needed for each pile, since it is usually not possible to have every card to be in the same orientation. Might need to do additional pivot and allow card by card scanning.
 
