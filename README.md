@@ -14,15 +14,9 @@ Would need to install the "textdistance" package as well:
 
 ------------------------------------
 
-<<<<<<< Updated upstream
-=======
-**Python OCR Installation**
-Link: https://builtin.com/data-science/python-ocr
 
 
 
-------------------------------------
->>>>>>> Stashed changes
 
 **The Process Plan So Far**
 
@@ -56,7 +50,7 @@ Note: Multiple rotations is needed for each pile, since it is usually not possib
 
 
 
-Idea: Use EAST detector to locate locations of text, isolate the surrounding area of the detected box, then use Tesseract's OSD (Orientation and script detection) to get the proper orientation and then recognize the text. Process image before or during as needed.
+Idea: Use EAST detector to locate locations of text, isolate the surrounding area (using masking) of the detected box, then use Tesseract's OSD (Orientation and script detection) to get the proper orientation and then recognize the text. Process image before or during as needed.
 - Source: https://pyimagesearch.com/2022/01/31/correcting-text-orientation-with-tesseract-and-python/
 
 
@@ -91,4 +85,12 @@ https://stackoverflow.com/questions/55593506/merge-the-bounding-boxes-near-by-in
 
 Tesseract Installation Guide:
 https://tesseract-ocr.github.io/tessdoc/Installation.html
+
+Python (Tesseract) OCR Installation:
+https://builtin.com/data-science/python-ocr
+
+Image Masking with OpenCV:
+https://pyimagesearch.com/2021/01/19/image-masking-with-opencv/
+
+
 
