@@ -10,6 +10,9 @@ import cv2 as cv
 import math
 import argparse
 
+# Import for rectangle
+import numpy as np
+
 parser = argparse.ArgumentParser(description='Use this script to run text detection deep learning networks using OpenCV.')
 # Input argument
 parser.add_argument('--input', help='Path to input image or video file. Skip this argument to capture frames from a camera.')
@@ -164,9 +167,9 @@ if __name__ == "__main__":
                 p1 = (vertices[j][0], vertices[j][1])
                 p2 = (vertices[(j + 1) % 4][0], vertices[(j + 1) % 4][1])
                 p1 = (int(p1[0]), int(p1[1]))
-                #print("p1:",p1)
+                print("p1:",p1)
                 p2 = (int(p2[0]), int(p2[1]))
-                #print("p2:",p2)
+                print("p2:",p2)
 
                 cv.line(frame, p1, p2, (0, 255, 0), 2, cv.LINE_AA)
                 #cv.putText(frame, "{:.3f}".format(confidences[i[0]]), (vertices[0][0], vertices[0][1]), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1, cv.LINE_AA)
@@ -178,6 +181,10 @@ if __name__ == "__main__":
         cv.imshow(kWinName,frame)
         cv.imwrite("output.png",frame)
 
-        
+        # draw a rectangle
+        rectangle = np.zeros((300, 300), dtype="uint8")
+        cv.rectangle(rectangle, (25, 25), (275, 275), 255, -1)
+        #cv.imshow("Rectangle", rectangle)
+        cv.imwrite("Rec.jpg", rectangle)
 
 
