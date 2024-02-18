@@ -3,7 +3,7 @@
 # https://github.com/spmallick/learnopencv/blob/master/TextDetectionEAST/textDetection.py
 # cd Documents\GitHub\MTG-Image-Titles-To-Text\textdetector
 # python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096
-
+# python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064
 
 # Import required modules
 import cv2 as cv
