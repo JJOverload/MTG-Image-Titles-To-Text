@@ -9,6 +9,9 @@ import numpy as np
 #import numpy as np
 import cv2
 
+#for Windows - Might need to comment this out if in Linux
+pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+
 filename = "1_python-ocr.jpg"
 img1 = np.array(Image.open(filename))
 text = pytesseract.image_to_string(img1)
