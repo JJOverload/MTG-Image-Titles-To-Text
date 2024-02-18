@@ -1,7 +1,6 @@
 #code found in: https://builtin.com/data-science/python-ocr
 # cd MTG-Image-Titles-To-Text/tesseract-ocr
 
-
 from PIL import Image
 import pytesseract
 import numpy as np
@@ -10,6 +9,9 @@ import numpy as np
 #import numpy as np
 import cv2
 
+#for Windows - Might need to comment this out if in Linux
+pytesseract.pytesseract.tesseract_cmd = 'C:\\Program Files\\Tesseract-OCR\\tesseract.exe'
+
 filename = "1_python-ocr.jpg"
 img1 = np.array(Image.open(filename))
 text = pytesseract.image_to_string(img1)
@@ -17,7 +19,8 @@ text = pytesseract.image_to_string(img1)
 print("First image text:", text)
 
 #filename = '3_python-ocr.jpg'
-filename = "CardPileSample1.jpg"
+#filename = "CardPileSample1.jpg"
+filename = "tegwyll-nonlands-Copy.jpg"
 img2 = np.array(Image.open(filename))
 text = pytesseract.image_to_string(img2)
 print("Second image text:", text)

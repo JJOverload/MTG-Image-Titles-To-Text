@@ -1,6 +1,6 @@
 # MTG-Image-Titles-To-Text
 
-**Install Packages**
+**Install Packages for Autocorrecter**
 If you don't have it already:
 `pip install wheel`
 
@@ -13,6 +13,9 @@ Would need to install the "textdistance" package as well:
 `pip install textdistance`
 
 ------------------------------------
+
+
+
 
 
 **The Process Plan So Far**
@@ -37,10 +40,34 @@ For Ubuntu:
 - For the development tools (Tesseract):
 `sudo apt install libtesseract-dev`
 
+
+
 For cv2 module in Linux:
 `pip install opencv-python`
 
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+For Windows (check "Windows" section):
+https://tesseract-ocr.github.io/tessdoc/Installation.html
+~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+-----------------------------------------------------
+
+
 Note: Multiple rotations is needed for each pile, since it is usually not possible to have every card to be in the same orientation. Might need to do additional pivot and allow card by card scanning.
+
+
+
+
+
+
+Idea: Use EAST detector to locate locations of text, isolate the surrounding area (using masking) of the detected box, then use Tesseract's OSD (Orientation and script detection) to get the proper orientation and then recognize the text. Process image before or during as needed.
+- Source: https://pyimagesearch.com/2022/01/31/correcting-text-orientation-with-tesseract-and-python/
+
+
+
+
+
+
+
 
 **References**
 
@@ -55,11 +82,9 @@ https://learnopencv.com/deep-learning-based-text-detection-using-opencv-c-python
 StackOverflow on how to install multiple packages with one command: https://stackoverflow.com/questions/9956741/how-to-install-multiple-python-packages-at-once-using-pip
 
 
-A good read. Skimmed through the progress made so far by Quentin Fortier. Should be able to learn some stuff from here:
+(Paper) A good read. Skimmed through the progress made so far by Quentin Fortier. Should be able to learn some stuff from here:
 https://fortierq.github.io/mtgscan-ocr-azure-flask-celery-socketio/
 
-Python OCR with Tesseract:
-https://builtin.com/data-science/python-ocr
 
 Optical Character Recognition Using TensorFlow:
 https://medium.com/analytics-vidhya/optical-character-recognition-using-tensorflow-533061285dd3
@@ -69,4 +94,12 @@ https://stackoverflow.com/questions/55593506/merge-the-bounding-boxes-near-by-in
 
 Tesseract Installation Guide:
 https://tesseract-ocr.github.io/tessdoc/Installation.html
+
+Python (Tesseract) OCR Installation:
+https://builtin.com/data-science/python-ocr
+
+Image Masking with OpenCV:
+https://pyimagesearch.com/2021/01/19/image-masking-with-opencv/
+
+
 
