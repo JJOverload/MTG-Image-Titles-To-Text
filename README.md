@@ -46,10 +46,8 @@ For cv2 module in Linux:
 `pip install opencv-python`
 
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
 For Windows (check "Windows" section):
 https://tesseract-ocr.github.io/tessdoc/Installation.html
-
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------------------------------------------------
 
