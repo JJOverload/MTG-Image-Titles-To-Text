@@ -1,9 +1,13 @@
 # Code from: https://learnopencv.com/deep-learning-based-text-detection-using-opencv-c-python/
 # Using this for reference as well: https://learnopencv.com/deep-learning-with-opencvs-dnn-module-a-definitive-guide/
 # https://github.com/spmallick/learnopencv/blob/master/TextDetectionEAST/textDetection.py
+# https://pyimagesearch.com/2021/01/19/image-masking-with-opencv/
+
 # cd Documents\GitHub\MTG-Image-Titles-To-Text\textdetector
 # python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096
 # python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064
+# python textdetector.py --input tegwyll-nonlands-Copy.jpg --width 3072 --height 2656
+# python textdetector.py --input 1_python-ocr.jpg --width 800 --height 352
 
 # Import required modules
 import cv2 as cv
@@ -150,19 +154,30 @@ if __name__ == "__main__":
         t, _ = net.getPerfProfile()
         label = 'Inference time: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
 
+        # have buffers for getting coordinates for rectangles
+        startCorner = (0, 0)
+        endCorner = (0, 0)
+        #creating mask layer to work on later...
+        mask = np.zeros(frame.shape[:2], dtype="uint8")
         # Get scores and geometry
         scores = output[0]
         geometry = output[1]
         [boxes, confidences] = decode(scores, geometry, confThreshold)
         # Apply NMS
-        indices = cv.dnn.NMSBoxesRotated(boxes, confidences, confThreshold, nmsThreshold)
+        indices = cv.dnn.NMSBoxesRotated(boxes, confidences, confThreshold, nmsThreshold) 
         for i in indices:
+            wlist = []
+            hlist = []
             # get 4 corners of the rotated rect
             vertices = cv.boxPoints(boxes[i])
             # scale the bounding box coordinates based on the respective ratios
             for j in range(4):
                 vertices[j][0] *= rW
                 vertices[j][1] *= rH
+                #populating list for min/max getting and text isolation
+                wlist.append(int(vertices[j][0]))
+                hlist.append(int(vertices[j][1]))
+                print("Appended:", (vertices[j][0], vertices[j][1]) )
             for j in range(4):
                 p1 = (vertices[j][0], vertices[j][1])
                 p2 = (vertices[(j + 1) % 4][0], vertices[(j + 1) % 4][1])
@@ -173,18 +188,25 @@ if __name__ == "__main__":
 
                 cv.line(frame, p1, p2, (0, 255, 0), 2, cv.LINE_AA)
                 #cv.putText(frame, "{:.3f}".format(confidences[i[0]]), (vertices[0][0], vertices[0][1]), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1, cv.LINE_AA)
-
+                cv.rectangle(mask, (min(wlist), min(hlist)), (max(wlist), max(hlist)), 255, -1)
+                masked = cv.bitwise_and(frame, frame, mask=mask)
         # Put efficiency information
         cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
 
         # Display the frame
         cv.imshow(kWinName,frame)
         cv.imwrite("output.png",frame)
-
+        cv.imwrite("Rec.jpg", masked)
+        
+        '''
         # draw a rectangle
         rectangle = np.zeros((300, 300), dtype="uint8")
         cv.rectangle(rectangle, (25, 25), (275, 275), 255, -1)
         #cv.imshow("Rectangle", rectangle)
         cv.imwrite("Rec.jpg", rectangle)
+        '''
+        
+
+
 
 
