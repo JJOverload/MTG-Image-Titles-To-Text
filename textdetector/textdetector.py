@@ -186,6 +186,7 @@ if __name__ == "__main__":
                 p2 = (int(p2[0]), int(p2[1]))
                 print("p2:",p2)
 
+                # Drawing line
                 cv.line(frame, p1, p2, (0, 255, 0), 2, cv.LINE_AA)
                 #cv.putText(frame, "{:.3f}".format(confidences[i[0]]), (vertices[0][0], vertices[0][1]), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1, cv.LINE_AA)
                 cv.rectangle(mask, (min(wlist), min(hlist)), (max(wlist), max(hlist)), 255, -1)
@@ -198,13 +199,8 @@ if __name__ == "__main__":
         cv.imwrite("output.png",frame)
         cv.imwrite("Rec.jpg", masked)
         
-        '''
-        # draw a rectangle
-        rectangle = np.zeros((300, 300), dtype="uint8")
-        cv.rectangle(rectangle, (25, 25), (275, 275), 255, -1)
-        #cv.imshow("Rectangle", rectangle)
-        cv.imwrite("Rec.jpg", rectangle)
-        '''
+        # Would need to apply merging of bounding boxes algorithm into this program:
+        # https://stackoverflow.com/questions/55593506/merge-the-bounding-boxes-near-by-into-one
         
 
 
