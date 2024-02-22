@@ -103,6 +103,14 @@ def decode(scores, geometry, scoreThresh):
     # Return detections and confidences
     return [detections, confidences]
 
+#def merge_boxes(box1, box2):
+
+#def calc_sim(text, obj):
+    # text: ymin, xmin, ymax, xmax
+    # obj: ymin, xmin, ymax, xmax
+
+
+
 if __name__ == "__main__":
     # Read and store arguments
     confThreshold = args.thr
@@ -154,6 +162,8 @@ if __name__ == "__main__":
         t, _ = net.getPerfProfile()
         label = 'Inference time: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
 
+        # Creating buffer/container for bounding boxes' vertices
+        bbox = []
         # have buffers for getting coordinates for rectangles
         startCorner = (0, 0)
         endCorner = (0, 0)
@@ -177,18 +187,27 @@ if __name__ == "__main__":
                 #populating list for min/max getting and text isolation
                 wlist.append(int(vertices[j][0]))
                 hlist.append(int(vertices[j][1]))
-                print("Appended:", (vertices[j][0], vertices[j][1]) )
+                print("Appended:", (int(vertices[j][0]), int(vertices[j][1]) ) )
+            print("Initial vertices for a box completed.")
+            # text: ymin, xmin, ymax, xmax
+            # obj: ymin, xmin, ymax, xmax
+            # order of parameters currently not synchronized with initial algorithm
+            xmin, ymin, xmax, ymax = min(wlist), min(hlist), max(wlist), max(hlist)
+            bbox.append((xmin, ymin, xmax, ymax))
             for j in range(4):
                 p1 = (vertices[j][0], vertices[j][1])
                 p2 = (vertices[(j + 1) % 4][0], vertices[(j + 1) % 4][1])
                 p1 = (int(p1[0]), int(p1[1]))
-                print("p1:",p1)
+                #print("p1:",p1)
                 p2 = (int(p2[0]), int(p2[1]))
-                print("p2:",p2)
+                #print("p2:",p2)
+
+
 
                 # Drawing line
                 cv.line(frame, p1, p2, (0, 255, 0), 2, cv.LINE_AA)
                 #cv.putText(frame, "{:.3f}".format(confidences[i[0]]), (vertices[0][0], vertices[0][1]), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1, cv.LINE_AA)
+                # Making rectangle and then applying it as a mask
                 cv.rectangle(mask, (min(wlist), min(hlist)), (max(wlist), max(hlist)), 255, -1)
                 masked = cv.bitwise_and(frame, frame, mask=mask)
         # Put efficiency information
@@ -199,6 +218,10 @@ if __name__ == "__main__":
         cv.imwrite("output.png",frame)
         cv.imwrite("Rec.jpg", masked)
         
+        # Test
+        print("printing out bbox:")
+        for b in bbox:
+            print(b)
         # Would need to apply merging of bounding boxes algorithm into this program:
         # https://stackoverflow.com/questions/55593506/merge-the-bounding-boxes-near-by-into-one
         
