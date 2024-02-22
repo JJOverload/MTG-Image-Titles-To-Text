@@ -3,6 +3,10 @@
 # https://github.com/spmallick/learnopencv/blob/master/TextDetectionEAST/textDetection.py
 # https://pyimagesearch.com/2021/01/19/image-masking-with-opencv/
 
+# Inspired by this code for applying merging of bounding boxes algorithm:
+# https://stackoverflow.com/questions/55593506/merge-the-bounding-boxes-near-by-into-one
+
+# Sample CMD commands:
 # cd Documents\GitHub\MTG-Image-Titles-To-Text\textdetector
 # python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096
 # python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064
@@ -203,6 +207,8 @@ if __name__ == "__main__":
         endCorner = (0, 0)
         #creating mask layer to work on later...
         mask = np.zeros(frame.shape[:2], dtype="uint8")
+        mask2 = np.zeros(frame.shape[:2], dtype="uint8")
+        
         # Get scores and geometry
         scores = output[0]
         geometry = output[1]
@@ -246,11 +252,6 @@ if __name__ == "__main__":
                 masked = cv.bitwise_and(frame, frame, mask=mask)
         # Put efficiency information
         cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
-
-        # Display the frame
-        cv.imshow(kWinName,frame)
-        cv.imwrite("output.png",frame)
-        cv.imwrite("Rec.jpg", masked)
         
         # Test
         print("-----Printing out inital bbox-----:")
@@ -267,10 +268,18 @@ if __name__ == "__main__":
         for b in bbox:
             counter += 1
             print(counter, b)
-        # Would need to apply merging of bounding boxes algorithm into this program:
-        # https://stackoverflow.com/questions/55593506/merge-the-bounding-boxes-near-by-into-one
-        
+            # text: xmin, ymin, xmax, ymax
+            # obj: xmin, ymin, xmax, ymax
+            cv.rectangle(mask2, (b[0], b[1]), (b[2], b[3]), 255, -1)
+        # text: xmin, ymin, xmax, ymax
+        # obj: xmin, ymin, xmax, ymax
+        masked2 = cv.bitwise_and(frame, frame, mask=mask2)
 
+        # Display the frame
+        cv.imshow(kWinName,frame)
+        cv.imwrite("output.png",frame)
+        cv.imwrite("Rec.jpg", masked)
+        cv.imwrite("Rec2.jpg", masked2)
 
 
 
