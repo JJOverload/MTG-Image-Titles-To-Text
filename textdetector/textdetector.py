@@ -3,6 +3,10 @@
 # https://github.com/spmallick/learnopencv/blob/master/TextDetectionEAST/textDetection.py
 # https://pyimagesearch.com/2021/01/19/image-masking-with-opencv/
 
+# Inspired by this code for applying merging of bounding boxes algorithm:
+# https://stackoverflow.com/questions/55593506/merge-the-bounding-boxes-near-by-into-one
+
+# Sample CMD commands:
 # cd Documents\GitHub\MTG-Image-Titles-To-Text\textdetector
 # python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096
 # python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064
@@ -103,6 +107,44 @@ def decode(scores, geometry, scoreThresh):
     # Return detections and confidences
     return [detections, confidences]
 
+def merge_boxes(box1, box2):
+    box1_xmin, box1_ymin, box1_xmax, box1_ymax = box1
+    box2_xmin, box2_ymin, box2_xmax, box2_ymax = box2
+
+    return( (min(box1_xmin, box2_xmin), min(box1_ymin, box2_ymin), max(box1_xmax, box2_xmax), max(box1_ymax, box2_ymax)) )
+
+def calc_sim(text, obj):
+    # text: xmin, ymin, xmax, ymax
+    # obj: xmin, ymin, xmax, ymax
+    text_xmin, text_ymin, text_xmax, text_ymax = text
+    obj_xmin, obj_ymin, obj_xmax, obj_ymax = obj
+
+    x_dist = min(abs(text_xmin-obj_xmin), abs(text_xmin-obj_xmax), abs(text_xmax-obj_xmin), abs(text_xmax-obj_xmax))
+    y_dist = min(abs(text_ymin-obj_ymin), abs(text_ymin-obj_ymax), abs(text_ymax-obj_ymin), abs(text_ymax-obj_ymax))
+
+    dist = x_dist + y_dist
+    return(dist)
+
+def merge_algo(bboxes):
+    for j in bboxes:
+        for k in bboxes:
+            if j == k: #continue on if we are comparing a box with itself
+                continue
+            # Find out if these two bboxes are within distance limit
+            if calc_sim(j, k) < dist_limit:
+                # Create a new box
+                new_box = merge_boxes(j, k)
+                bboxes.append(new_box)
+                # Remove previous boxes
+                bboxes.remove(j)
+                bboxes.remove(k)
+
+                #Return True and new "bboxes"
+                return(True, bboxes)
+    return(False, bboxes)
+
+
+
 if __name__ == "__main__":
     # Read and store arguments
     confThreshold = args.thr
@@ -110,6 +152,11 @@ if __name__ == "__main__":
     inpWidth = args.width
     inpHeight = args.height
     model = args.model
+
+    # Creating buffer/container for bounding boxes' vertices
+    bbox = []
+    # Setting distance limit for bounding box merging
+    dist_limit = 40
 
     # Load network
     net = cv.dnn.readNet(model)
@@ -154,11 +201,14 @@ if __name__ == "__main__":
         t, _ = net.getPerfProfile()
         label = 'Inference time: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
 
+        
         # have buffers for getting coordinates for rectangles
         startCorner = (0, 0)
         endCorner = (0, 0)
         #creating mask layer to work on later...
         mask = np.zeros(frame.shape[:2], dtype="uint8")
+        mask2 = np.zeros(frame.shape[:2], dtype="uint8")
+        
         # Get scores and geometry
         scores = output[0]
         geometry = output[1]
@@ -177,36 +227,59 @@ if __name__ == "__main__":
                 #populating list for min/max getting and text isolation
                 wlist.append(int(vertices[j][0]))
                 hlist.append(int(vertices[j][1]))
-                print("Appended:", (vertices[j][0], vertices[j][1]) )
+                print("Appended:", (int(vertices[j][0]), int(vertices[j][1]) ) )
+            print("Initial vertices for a box completed.")
+            # text: ymin, xmin, ymax, xmax
+            # obj: ymin, xmin, ymax, xmax
+            # order of parameters currently not synchronized with initial algorithm
+            xmin, ymin, xmax, ymax = min(wlist), min(hlist), max(wlist), max(hlist)
+            bbox.append((xmin, ymin, xmax, ymax))
             for j in range(4):
                 p1 = (vertices[j][0], vertices[j][1])
                 p2 = (vertices[(j + 1) % 4][0], vertices[(j + 1) % 4][1])
                 p1 = (int(p1[0]), int(p1[1]))
-                print("p1:",p1)
+                #print("p1:",p1)
                 p2 = (int(p2[0]), int(p2[1]))
-                print("p2:",p2)
+                #print("p2:",p2)
 
+
+
+                # Drawing line
                 cv.line(frame, p1, p2, (0, 255, 0), 2, cv.LINE_AA)
                 #cv.putText(frame, "{:.3f}".format(confidences[i[0]]), (vertices[0][0], vertices[0][1]), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1, cv.LINE_AA)
+                # Making rectangle and then applying it as a mask
                 cv.rectangle(mask, (min(wlist), min(hlist)), (max(wlist), max(hlist)), 255, -1)
                 masked = cv.bitwise_and(frame, frame, mask=mask)
         # Put efficiency information
         cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
+        
+        # Test
+        print("-----Printing out inital bbox-----:")
+        for b in bbox:
+            print(b)
+
+        need_to_merge = True
+        #Merge the boxes
+        while need_to_merge:
+            need_to_merge, bbox = merge_algo(bbox)
+
+        print("-----Printing out final bbox-----:")
+        counter = 0
+        for b in bbox:
+            counter += 1
+            print(counter, b)
+            # text: xmin, ymin, xmax, ymax
+            # obj: xmin, ymin, xmax, ymax
+            cv.rectangle(mask2, (b[0], b[1]), (b[2], b[3]), 255, -1)
+        # text: xmin, ymin, xmax, ymax
+        # obj: xmin, ymin, xmax, ymax
+        masked2 = cv.bitwise_and(frame, frame, mask=mask2)
 
         # Display the frame
         cv.imshow(kWinName,frame)
         cv.imwrite("output.png",frame)
         cv.imwrite("Rec.jpg", masked)
-        
-        '''
-        # draw a rectangle
-        rectangle = np.zeros((300, 300), dtype="uint8")
-        cv.rectangle(rectangle, (25, 25), (275, 275), 255, -1)
-        #cv.imshow("Rectangle", rectangle)
-        cv.imwrite("Rec.jpg", rectangle)
-        '''
-        
-
+        cv.imwrite("Rec2.jpg", masked2)
 
 
 
