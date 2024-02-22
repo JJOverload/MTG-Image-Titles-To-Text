@@ -103,11 +103,41 @@ def decode(scores, geometry, scoreThresh):
     # Return detections and confidences
     return [detections, confidences]
 
-#def merge_boxes(box1, box2):
+def merge_boxes(box1, box2):
+    box1_xmin, box1_ymin, box1_xmax, box1_ymax = box1
+    box2_xmin, box2_ymin, box2_xmax, box2_ymax = box2
 
-#def calc_sim(text, obj):
-    # text: ymin, xmin, ymax, xmax
-    # obj: ymin, xmin, ymax, xmax
+    return( (min(box1_xmin, box2_xmin), min(box1_ymin, box2_ymin), max(box1_xmax, box2_xmax), max(box1_ymax, box2_ymax)) )
+
+def calc_sim(text, obj):
+    # text: xmin, ymin, xmax, ymax
+    # obj: xmin, ymin, xmax, ymax
+    text_xmin, text_ymin, text_xmax, text_ymax = text
+    obj_xmin, obj_ymin, obj_xmax, obj_ymax = obj
+
+    x_dist = min(abs(text_xmin-obj_xmin), abs(text_xmin-obj_xmax), abs(text_xmax-obj_xmin), abs(text_xmax-obj_xmax))
+    y_dist = min(abs(text_ymin-obj_ymin), abs(text_ymin-obj_ymax), abs(text_ymax-obj_ymin), abs(text_ymax-obj_ymax))
+
+    dist = x_dist + y_dist
+    return(dist)
+
+def merge_algo(bboxes):
+    for j in bboxes:
+        for k in bboxes:
+            if j == k: #continue on if we are comparing a box with itself
+                continue
+            # Find out if these two bboxes are within distance limit
+            if calc_sim(j, k) < dist_limit:
+                # Create a new box
+                new_box = merge_boxes(j, k)
+                bboxes.append(new_box)
+                # Remove previous boxes
+                bboxes.remove(j)
+                bboxes.remove(k)
+
+                #Return True and new "bboxes"
+                return(True, bboxes)
+    return(False, bboxes)
 
 
 
@@ -118,6 +148,11 @@ if __name__ == "__main__":
     inpWidth = args.width
     inpHeight = args.height
     model = args.model
+
+    # Creating buffer/container for bounding boxes' vertices
+    bbox = []
+    # Setting distance limit for bounding box merging
+    dist_limit = 40
 
     # Load network
     net = cv.dnn.readNet(model)
@@ -162,8 +197,7 @@ if __name__ == "__main__":
         t, _ = net.getPerfProfile()
         label = 'Inference time: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
 
-        # Creating buffer/container for bounding boxes' vertices
-        bbox = []
+        
         # have buffers for getting coordinates for rectangles
         startCorner = (0, 0)
         endCorner = (0, 0)
@@ -219,7 +253,16 @@ if __name__ == "__main__":
         cv.imwrite("Rec.jpg", masked)
         
         # Test
-        print("printing out bbox:")
+        print("Printing out inital bbox:")
+        for b in bbox:
+            print(b)
+
+        need_to_merge = True
+        #Merge the boxes
+        while need_to_merge:
+            need_to_merge, bbox = merge_algo(bbox)
+
+        print("Printing out final bbox:")
         for b in bbox:
             print(b)
         # Would need to apply merging of bounding boxes algorithm into this program:
