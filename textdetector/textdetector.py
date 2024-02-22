@@ -253,7 +253,7 @@ if __name__ == "__main__":
         cv.imwrite("Rec.jpg", masked)
         
         # Test
-        print("Printing out inital bbox:")
+        print("-----Printing out inital bbox-----:")
         for b in bbox:
             print(b)
 
@@ -262,9 +262,11 @@ if __name__ == "__main__":
         while need_to_merge:
             need_to_merge, bbox = merge_algo(bbox)
 
-        print("Printing out final bbox:")
+        print("-----Printing out final bbox-----:")
+        counter = 0
         for b in bbox:
-            print(b)
+            counter += 1
+            print(counter, b)
         # Would need to apply merging of bounding boxes algorithm into this program:
         # https://stackoverflow.com/questions/55593506/merge-the-bounding-boxes-near-by-into-one
         
