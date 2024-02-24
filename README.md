@@ -20,18 +20,15 @@ Would need to install the "textdistance" package as well:
 
 **The Process Plan So Far**
 
-Use this link: https://www.imagetotext.info/jpg-to-word
-
-Then:
-- Save output from link into a text file
-- (Might need to remove noise somehow)
-- Run autocorrector.py to have corrections in case missing minor spelling.
-
 ------------------------------------
 
-**Tesseract Route**
-If wanting to pivot with Tesseract. Will need to install it.
-
+**Installing Tesseract**
+If wanting to use Tesseract. Will need to install it.
+~~~
+For Windows (check "Windows" section):
+https://tesseract-ocr.github.io/tessdoc/Installation.html
+~~~
+~~~
 For Ubuntu:
 
 - For Tesseract:
@@ -44,11 +41,8 @@ For Ubuntu:
 
 For cv2 module in Linux:
 `pip install opencv-python`
+~~~
 
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-For Windows (check "Windows" section):
-https://tesseract-ocr.github.io/tessdoc/Installation.html
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 -----------------------------------------------------
 
 
@@ -63,7 +57,7 @@ Idea: Use EAST detector to locate locations of text, isolate the surrounding are
 - Source: https://pyimagesearch.com/2022/01/31/correcting-text-orientation-with-tesseract-and-python/
 
 
-
+Note: So far, the code runs properly in Windows for now. Would need to modify file save location of "box" jpg images, while using textdetector.py (for example).
 
 
 
@@ -103,3 +97,11 @@ https://pyimagesearch.com/2021/01/19/image-masking-with-opencv/
 
 
 
+# Archived Material
+
+Use this link: https://www.imagetotext.info/jpg-to-word
+
+Then:
+- Save output from link into a text file
+- (Might need to remove noise somehow)
+- Run autocorrector.py to have corrections in case missing minor spelling.
