@@ -208,7 +208,9 @@ if __name__ == "__main__":
         #creating mask layer to work on later...
         mask = np.zeros(frame.shape[:2], dtype="uint8")
         mask2 = np.zeros(frame.shape[:2], dtype="uint8")
-        
+        #creating backup frame
+        frame2 = frame.copy()
+
         # Get scores and geometry
         scores = output[0]
         geometry = output[1]
@@ -249,7 +251,7 @@ if __name__ == "__main__":
                 #cv.putText(frame, "{:.3f}".format(confidences[i[0]]), (vertices[0][0], vertices[0][1]), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1, cv.LINE_AA)
                 # Making rectangle and then applying it as a mask
                 cv.rectangle(mask, (min(wlist), min(hlist)), (max(wlist), max(hlist)), 255, -1)
-                masked = cv.bitwise_and(frame, frame, mask=mask)
+                masked = cv.bitwise_and(frame2, frame2, mask=mask)
         # Put efficiency information
         cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
         
@@ -271,9 +273,16 @@ if __name__ == "__main__":
             # text: xmin, ymin, xmax, ymax
             # obj: xmin, ymin, xmax, ymax
             cv.rectangle(mask2, (b[0], b[1]), (b[2], b[3]), 255, -1)
+            
+            mask3 = np.zeros(frame2.shape[:2], dtype="uint8")
+            cv.rectangle(mask3, (b[0], b[1]), (b[2], b[3]), 255, -1)
+            masked3 = cv.bitwise_and(frame2, frame2, mask=mask3)
+            # Likely would need to modify this line below if using Linux. Use this line to help with debugging. Would need to create box_images directory first.
+            cv.imwrite(".\\box_images\\box"+str(counter)+".jpg", masked3)
+
         # text: xmin, ymin, xmax, ymax
         # obj: xmin, ymin, xmax, ymax
-        masked2 = cv.bitwise_and(frame, frame, mask=mask2)
+        masked2 = cv.bitwise_and(frame2, frame2, mask=mask2)
 
         # Display the frame
         cv.imshow(kWinName,frame)
