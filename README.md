@@ -95,6 +95,11 @@ https://builtin.com/data-science/python-ocr
 Image Masking with OpenCV:
 https://pyimagesearch.com/2021/01/19/image-masking-with-opencv/
 
+Pytesseract | Orientation & Script Detection (OSD):
+https://www.kaggle.com/code/dhorvay/pytesseract-orientation-script-detection-osd
+
+Correcting Text Orientation with Tesseract and Python:
+https://pyimagesearch.com/2022/01/31/correcting-text-orientation-with-tesseract-and-python/
 
 
 # Archived Material
