@@ -245,7 +245,7 @@ if __name__ == "__main__":
 
 
                 # Drawing line
-                cv.line(frame, p1, p2, (0, 255, 0), 2, cv.LINE_AA)
+                #cv.line(frame, p1, p2, (0, 255, 0), 2, cv.LINE_AA)
                 #cv.putText(frame, "{:.3f}".format(confidences[i[0]]), (vertices[0][0], vertices[0][1]), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1, cv.LINE_AA)
                 # Making rectangle and then applying it as a mask
                 cv.rectangle(mask, (min(wlist), min(hlist)), (max(wlist), max(hlist)), 255, -1)
@@ -271,6 +271,13 @@ if __name__ == "__main__":
             # text: xmin, ymin, xmax, ymax
             # obj: xmin, ymin, xmax, ymax
             cv.rectangle(mask2, (b[0], b[1]), (b[2], b[3]), 255, -1)
+            
+            mask3 = np.zeros(frame.shape[:2], dtype="uint8")
+            cv.rectangle(mask3, (b[0], b[1]), (b[2], b[3]), 255, -1)
+            masked3 = cv.bitwise_and(frame, frame, mask=mask3)
+            # Likely would need to modify this line below if using Linux
+            cv.imwrite(".\\box_images\\box"+str(counter)+".jpg", masked3)
+
         # text: xmin, ymin, xmax, ymax
         # obj: xmin, ymin, xmax, ymax
         masked2 = cv.bitwise_and(frame, frame, mask=mask2)
