@@ -13,13 +13,17 @@
 # python textdetector.py --input tegwyll-nonlands-Copy.jpg --width 3072 --height 2656
 # python textdetector.py --input 1_python-ocr.jpg --width 800 --height 352
 
-# Import required modules
+# Import for text detection
 import cv2 as cv
 import math
 import argparse
 
 # Import for rectangle
 import numpy as np
+
+# Import for OSD (pytesseract)
+from PIL import Image
+import pytesseract
 
 parser = argparse.ArgumentParser(description='Use this script to run text detection deep learning networks using OpenCV.')
 # Input argument
@@ -244,8 +248,6 @@ if __name__ == "__main__":
                 p2 = (int(p2[0]), int(p2[1]))
                 #print("p2:",p2)
 
-
-
                 # Drawing line
                 cv.line(frame, p1, p2, (0, 255, 0), 2, cv.LINE_AA)
                 #cv.putText(frame, "{:.3f}".format(confidences[i[0]]), (vertices[0][0], vertices[0][1]), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1, cv.LINE_AA)
@@ -277,18 +279,32 @@ if __name__ == "__main__":
             mask3 = np.zeros(frame2.shape[:2], dtype="uint8")
             cv.rectangle(mask3, (b[0], b[1]), (b[2], b[3]), 255, -1)
             masked3 = cv.bitwise_and(frame2, frame2, mask=mask3)
+            
             # Likely would need to modify this line below if using Linux. Use this line to help with debugging. Would need to create box_images directory first.
-            cv.imwrite(".\\box_images\\box"+str(counter)+".jpg", masked3)
+            path = ".\\box_images\\box"+str(counter)+".jpg"
+            cv.imwrite(path, masked3)
 
+            
         # text: xmin, ymin, xmax, ymax
         # obj: xmin, ymin, xmax, ymax
         masked2 = cv.bitwise_and(frame2, frame2, mask=mask2)
 
         # Display the frame
         cv.imshow(kWinName,frame)
-        cv.imwrite("output.png",frame)
+        cv.imwrite("output.png", frame)
         cv.imwrite("Rec.jpg", masked)
         cv.imwrite("Rec2.jpg", masked2)
+
+        # applying OSD per individual box and printing out text after corrected rotation
+        im = Image.open("Rec2.jpg")
+        osd = pytesseract.image_to_osd(im, output_type="dict")
+        rotate = osd['rotate']
+        im_fixed = im.copy().rotate(rotate)
+        #display(im_fixed.resize(int(0.3*s) for s in im_fixed.size)) #comment for now, since does not work
+        print(pytesseract.image_to_string(im_fixed))
+
+        
+        
 
 
 
