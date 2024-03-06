@@ -104,7 +104,8 @@ https://pyimagesearch.com/2022/01/31/correcting-text-orientation-with-tesseract-
 How to rotate an image using Python?:
 https://www.geeksforgeeks.org/how-to-rotate-an-image-using-python/
 
-
+Image Processing in Python with Pillow (Cropping Section)
+https://auth0.com/blog/image-processing-in-python-with-pillow/
 
 # Archived Material
 

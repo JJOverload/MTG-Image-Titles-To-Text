@@ -284,6 +284,13 @@ if __name__ == "__main__":
             path = ".\\box_images\\box"+str(counter)+".jpg"
             cv.imwrite(path, masked3)
 
+            #The coordinates for the cropping box are (left, upper, right, lower)
+            image_to_be_cropped = Image.open(path)
+            box = (b[0], b[1], b[2], b[3])
+            cropped_image = image_to_be_cropped.crop(box)
+            path3 = ".\\box_images\\box"+str(counter)+"_"+"cropped"+".jpg"
+            cropped_image.save(path3)
+
             #saving variations of frames in rotations
             counter2 = 0
             rotatelist = [1,2,3,4,5,-1,-2,-3,-4,-5]
