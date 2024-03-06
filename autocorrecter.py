@@ -1,14 +1,17 @@
 # Good code example in:
 # https://www.kaggle.com/code/gauravduttakiit/autocorrect-with-python
-# cd Documents\GitHub\MTG-Image-Titles-To-Text\
+# 
 # https://www.imagetotext.info/jpg-to-word
+#
+# cd Documents\GitHub\MTG-Image-Titles-To-Text\
 
+#for autocorrect
 import pandas as pd
 import numpy as np
 import textdistance
 import re
 from collections import Counter
-
+#for jsonparser
 import json
 
 names = []
@@ -64,6 +67,7 @@ def mtg_autocorrect(input_word):
         df = df.rename(columns={'index':'Name', 0:'Prob'})
         df['Similarity'] = similarities
         output = df.sort_values(['Similarity', 'Prob'], ascending=False).head(1)#.iat[0,0]
+        #print("output:\n", output)
         if output.iat[0,2] <= 0.1:
             return("")
         return(output)
