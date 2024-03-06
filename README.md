@@ -101,6 +101,10 @@ https://www.kaggle.com/code/dhorvay/pytesseract-orientation-script-detection-osd
 Correcting Text Orientation with Tesseract and Python:
 https://pyimagesearch.com/2022/01/31/correcting-text-orientation-with-tesseract-and-python/
 
+How to rotate an image using Python?:
+https://www.geeksforgeeks.org/how-to-rotate-an-image-using-python/
+
+
 
 # Archived Material
 
