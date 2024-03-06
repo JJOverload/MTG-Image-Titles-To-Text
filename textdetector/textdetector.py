@@ -279,14 +279,30 @@ if __name__ == "__main__":
             mask3 = np.zeros(frame2.shape[:2], dtype="uint8")
             cv.rectangle(mask3, (b[0], b[1]), (b[2], b[3]), 255, -1)
             masked3 = cv.bitwise_and(frame2, frame2, mask=mask3)
-            
+
             # Likely would need to modify this line below if using Linux. Use this line to help with debugging. Would need to create box_images directory first.
             path = ".\\box_images\\box"+str(counter)+".jpg"
             cv.imwrite(path, masked3)
 
+            #saving variations of frames in rotations
+            counter2 = 0
+            rotatelist = [1,2,3,4,5,-1,-2,-3,-4,-5]
+            masked3_copy = Image.open(path)
+            masked3_rotated = None
+            for degree in rotatelist:
+                counter2 += 1
+                masked3_rotated = masked3_copy.rotate(degree)
+                path2 = ".\\box_images\\box"+str(counter)+"_"+str(counter2)+".jpg"
+                masked3_rotated = masked3_rotated.save(path2)
+
+
+
+            
+
             
         # text: xmin, ymin, xmax, ymax
         # obj: xmin, ymin, xmax, ymax
+        #merging frame2 and mask2 to make masked2 altered frame
         masked2 = cv.bitwise_and(frame2, frame2, mask=mask2)
 
         # Display the frame
@@ -296,12 +312,13 @@ if __name__ == "__main__":
         cv.imwrite("Rec2.jpg", masked2)
 
         # applying OSD per individual box and printing out text after corrected rotation
-        im = Image.open("Rec2.jpg")
-        osd = pytesseract.image_to_osd(im, output_type="dict")
-        rotate = osd['rotate']
-        im_fixed = im.copy().rotate(rotate)
+        #im = Image.open("Rec2.jpg")
+        #osd = pytesseract.image_to_osd(im, output_type="dict")
+        #rotate = osd['rotate']
+        #im_fixed = im.copy().rotate(rotate)
+
         #display(im_fixed.resize(int(0.3*s) for s in im_fixed.size)) #comment for now, since does not work
-        print(pytesseract.image_to_string(im_fixed))
+        #print(pytesseract.image_to_string(im_fixed))
 
         
         
