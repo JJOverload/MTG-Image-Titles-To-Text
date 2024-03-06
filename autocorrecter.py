@@ -82,7 +82,7 @@ print("-----Printing out \"Unclean Lines\"-----")
 print(unclean_lines)
 
 for search_word in unclean_lines:
-    search_word = search_word.strip()
+    search_word = search_word.strip() #removes all newline characters from beginning and ending, but not middle
     print("-----Printing out results for \"" + search_word + "\"------")
     output = mtg_autocorrect(search_word)
     if output == "":
