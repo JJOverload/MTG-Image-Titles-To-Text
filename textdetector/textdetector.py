@@ -288,20 +288,20 @@ if __name__ == "__main__":
             image_to_be_cropped = Image.open(path)
             box = (b[0], b[1], b[2], b[3])
             cropped_image = image_to_be_cropped.crop(box)
-            path3 = ".\\box_images\\box"+str(counter)+"_"+"cropped"+".jpg"
-            cropped_image.save(path3)
+            path2 = ".\\box_images\\box"+str(counter)+"_"+"cropped"+".jpg"
+            cropped_image.save(path2)
 
             #saving variations of frames in rotations
             counter2 = 0
-            rotatelist = [1,2,3,4,5,-1,-2,-3,-4,-5]
-            masked3_copy = Image.open(path)
+            rotatelist = [10,9,8,7,6,5,4,3,2,1,0,-1,-2,-3,-4,-5,-6,-7,-8,-9,-10]
+            masked3_copy = Image.open(path2)
             masked3_rotated = None
             for degree in rotatelist:
                 counter2 += 1
                 masked3_rotated = masked3_copy.rotate(degree)
-                path2 = ".\\box_images\\box"+str(counter)+"_"+str(counter2)+".jpg"
-                masked3_rotated = masked3_rotated.save(path2)
-
+                path3 = ".\\box_images\\box"+str(counter)+"_"+str(counter2)+".jpg"
+                masked3_rotated.save(path3)
+                print(path3, ":", pytesseract.image_to_string(masked3_rotated))
 
 
             
