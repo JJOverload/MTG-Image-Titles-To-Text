@@ -56,9 +56,9 @@ Example: `cd Documents\GitHub\MTG-Image-Titles-To-Text\textdetector`
 Step 2: Using python to run the program. (Be sure to make sure each dimension is divisible by 32)
 
 Example:<br>
-`python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096`
-`python textdetector.py --input tegwyll-nonlands-Copy.jpg --width 3072 --height 2656`
-`python textdetector.py --input 1_python-ocr.jpg --width 800 --height 352`
+`python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096`<br>
+`python textdetector.py --input tegwyll-nonlands-Copy.jpg --width 3072 --height 2656`<br>
+`python textdetector.py --input 1_python-ocr.jpg --width 800 --height 352`<br>
 
 Note: Try to ensure that the image's height is not too large relative to width, since certain dimensions can cause the image to be rotated sideways. (As seen when using: `python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064`)
 
