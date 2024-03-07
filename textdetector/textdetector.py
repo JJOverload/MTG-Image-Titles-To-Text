@@ -1,4 +1,4 @@
-# Code from: https://learnopencv.com/deep-learning-based-text-detection-using-opencv-c-python/
+# Initial code from: https://learnopencv.com/deep-learning-based-text-detection-using-opencv-c-python/
 # Using this for reference as well: https://learnopencv.com/deep-learning-with-opencvs-dnn-module-a-definitive-guide/
 # https://github.com/spmallick/learnopencv/blob/master/TextDetectionEAST/textDetection.py
 # https://pyimagesearch.com/2021/01/19/image-masking-with-opencv/
@@ -19,7 +19,7 @@ import math
 import argparse
 # Import for rectangle
 import numpy as np
-# Import for OSD (pytesseract)
+# Import for rotations (and pytesseract)
 from PIL import Image
 import pytesseract
 #for autocorrect
