@@ -28,9 +28,15 @@ import numpy as np
 import textdistance
 import re
 from collections import Counter
-#for jsonparser
+# For jsonparser
 import json
+# For Timer
+import datetime
 
+# Recording start time for timer
+starttime = datetime.datetime.now()
+
+# Grabbing arguments from command line when executing command
 parser = argparse.ArgumentParser(description='Use this script to run text detection deep learning networks using OpenCV.')
 # Input argument
 parser.add_argument('--input', help='Path to input image or video file. Skip this argument to capture frames from a camera.')
@@ -387,8 +393,14 @@ if __name__ == "__main__":
 
         #display(im_fixed.resize(int(0.3*s) for s in im_fixed.size)) #comment for now, since does not work
         #print(pytesseract.image_to_string(im_fixed))
-
         
+
+
+
+        #Recording endtime and outputing elapsed time
+        endtime = datetime.datetime.now()
+        elapsedtime = endtime - starttime
+        print(elapsedtime)
         
 
 
