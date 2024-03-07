@@ -17,13 +17,19 @@
 import cv2 as cv
 import math
 import argparse
-
 # Import for rectangle
 import numpy as np
-
 # Import for OSD (pytesseract)
 from PIL import Image
 import pytesseract
+#for autocorrect
+import pandas as pd
+import numpy as np
+import textdistance
+import re
+from collections import Counter
+#for jsonparser
+import json
 
 parser = argparse.ArgumentParser(description='Use this script to run text detection deep learning networks using OpenCV.')
 # Input argument
@@ -147,6 +153,24 @@ def merge_algo(bboxes):
                 return(True, bboxes)
     return(False, bboxes)
 
+#Finding Similar Names for autocorrector portion
+def mtg_autocorrect(input_word, V, name_freq_dict, probs):
+    #input_word = input_word.lower()
+
+    # qval in similarities needs to be 2, meaning input_word needs to be 2 characters or more.
+    if len(input_word) == 1:
+        input_word = input_word + " "
+    elif len(input_word) == 0:
+        input_word = input_word + "  "
+    similarities = [1-(textdistance.Jaccard(qval=2).distance(v,input_word)) for v in name_freq_dict.keys()]
+    df = pd.DataFrame.from_dict(probs, orient='index').reset_index()
+    df = df.rename(columns={'index':'Name', 0:'Prob'})
+    df['Similarity'] = similarities
+    output = df.sort_values(['Similarity', 'Prob'], ascending=False).head(1)#.iat[0,0]
+    #print("output:\n", output)
+    #if output.iat[0,2] <= 0.1:
+    #    return("")
+    return(output)
 
 
 if __name__ == "__main__":
@@ -182,6 +206,25 @@ if __name__ == "__main__":
 
     # Open a video file or an image file or a camera stream
     cap = cv.VideoCapture(args.input if args.input else 0)
+
+    print("-----Opening Atomic Cards JSON------")
+    names = []
+    #AtomicCards_data is a dictionary of dictionaries of...
+    with open('AtomicCards.json', 'r', encoding="utf8") as AtomicCards_file:
+        AtomicCards_data = json.load(AtomicCards_file)
+    #creating list/set of names
+    names = list(AtomicCards_data["data"].keys())
+    V = set(names)
+    #Counter of name frequency
+    name_freq_dict = {}
+    name_freq_dict = Counter(names)
+    #Relative Frequency of names
+    print("-----Populating dictionary of Name Frequencies-----")
+    probs = {}
+    Total = sum(name_freq_dict.values())
+    for k in name_freq_dict.keys():
+        probs[k] = name_freq_dict[k]/Total
+
 
     while cv.waitKey(1) < 0:
         # Read frame
@@ -268,6 +311,7 @@ if __name__ == "__main__":
             need_to_merge, bbox = merge_algo(bbox)
 
         print("-----Printing out final bbox-----:")
+        bestNameList = []
         counter = 0
         for b in bbox:
             counter += 1
@@ -296,22 +340,37 @@ if __name__ == "__main__":
             rotatelist = [10,9,8,7,6,5,4,3,2,1,0,-1,-2,-3,-4,-5,-6,-7,-8,-9,-10]
             masked3_copy = Image.open(path2)
             masked3_rotated = None
+            maxSimilarity = 0.0
+            bestOutput = mtg_autocorrect("", V, name_freq_dict, probs)
             for degree in rotatelist:
                 counter2 += 1
                 masked3_rotated = masked3_copy.rotate(degree)
                 path3 = ".\\box_images\\box"+str(counter)+"_"+str(counter2)+".jpg"
                 masked3_rotated.save(path3)
-                print(path3, ":", pytesseract.image_to_string(masked3_rotated))
+                imageToStrStr = pytesseract.image_to_string(masked3_rotated)
+                autocorrectOutput = mtg_autocorrect(imageToStrStr, V, name_freq_dict, probs)
+                tempSimilarity = autocorrectOutput.iat[0,2]
+                if tempSimilarity > maxSimilarity:
+                    maxSimilarity = tempSimilarity
+                    bestOutput = autocorrectOutput
+                print(path3, ":", imageToStrStr, ":", autocorrectOutput)
+            print("Best Name:", bestOutput) #output the "best" name extracted from among all the rotated images for this bounding box
+            if (bestOutput.iat[0,2] <= 0.35):
+                print("-----bestOutput Likely Noise - Skipped-----")
+            else: #If name is exising or is not "noise" due to low similarity
+                bestNameList.append((bestOutput.iat[0,0], bestOutput.iat[0,2]))
+
 
 
             
 
-            
+        print("-----Outputing Best Name List-----")
+        print(bestNameList)
+        print("Length of bestNameList:", len(bestNameList))
         # text: xmin, ymin, xmax, ymax
         # obj: xmin, ymin, xmax, ymax
         #merging frame2 and mask2 to make masked2 altered frame
         masked2 = cv.bitwise_and(frame2, frame2, mask=mask2)
-
         # Display the frame
         cv.imshow(kWinName,frame)
         cv.imwrite("output.png", frame)
