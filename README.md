@@ -60,7 +60,7 @@ Example:<br>
 `python textdetector.py --input tegwyll-nonlands-Copy.jpg --width 3072 --height 2656`
 `python textdetector.py --input 1_python-ocr.jpg --width 800 --height 352`
 
-Note: Try to ensure that the image's height is not too large, since certain dimensions can cause the image to be rotated by EAST algorithm. (As seen when using: `python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064`)
+Note: Try to ensure that the image's height is not too large relative to width, since certain dimensions can cause the image to be rotated sideways. (As seen when using: `python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064`)
 
 ------------------------------------
 
@@ -69,7 +69,7 @@ Note: Try to ensure that the image's height is not too large, since certain dime
 - First uses EAST text detections to help detect the words off of the image of cards via bounding boxes.
 - Then would use merging of bounding box to get a box around each title/name.
 - Slight rotations of merged images gets applied before using text recognition algorithm on it (Pytesseract).
-- Compare strings found for each rotated image to existing names gathered from data (Extracted from mtgjson.com), and keep the "best"/ones with the most similarities to existing MTG card name.
+- Compare strings found for each rotated image to existing names gathered from data (Extracted from mtgjson.com), and keep the "best"/ones with the most similarities to existing MTG card name. Kept names gets displayed at the end of the program.
 
 Note: Did not use OSD since it could not detect rotations less than 90 degrees with it.
 
