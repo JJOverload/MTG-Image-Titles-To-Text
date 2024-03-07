@@ -367,6 +367,8 @@ if __name__ == "__main__":
         print("-----Outputing Best Name List-----")
         print(bestNameList)
         print("Length of bestNameList:", len(bestNameList))
+        for n, s in bestNameList:
+            print(n)
         # text: xmin, ymin, xmax, ymax
         # obj: xmin, ymin, xmax, ymax
         #merging frame2 and mask2 to make masked2 altered frame
