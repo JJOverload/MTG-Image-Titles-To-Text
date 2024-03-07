@@ -1,26 +1,13 @@
 # MTG-Image-Titles-To-Text
 
-**Install Packages for Autocorrecter**
-If you don't have it already:
-`pip install wheel`
+**Setting Up EAST (An Efficient and Accurate Scene Text Detector) Code**
 
-then:
-`pip install pandas`
+More info on how to set up EAST found here in this link:<br>
+https://learnopencv.com/deep-learning-based-text-detection-using-opencv-c-python/
 
-`pip install Pyarrow`
-
-Would need to install the "textdistance" package as well:
-`pip install textdistance`
 
 ------------------------------------
 
-
-
-
-
-**The Process Plan So Far**
-
-------------------------------------
 
 **Installing Tesseract**
 If wanting to use Tesseract. Will need to install it.
@@ -45,22 +32,51 @@ For cv2 module in Linux:
 
 -----------------------------------------------------
 
+**Install Packages for Autocorrecter**
+If you don't have it already:
+`pip install wheel`
 
-Note: Multiple rotations is needed for each pile, since it is usually not possible to have every card to be in the same orientation. Might need to do additional pivot and allow card by card scanning.
+then:
+`pip install pandas`
 
+`pip install Pyarrow`
 
-
-
-
-
-Idea: Use EAST detector to locate locations of text, isolate the surrounding area (using masking) of the detected box, then use Tesseract's OSD (Orientation and script detection) to get the proper orientation and then recognize the text. Process image before or during as needed.
-- Source: https://pyimagesearch.com/2022/01/31/correcting-text-orientation-with-tesseract-and-python/
-
-
-Note: So far, the code runs properly in Windows for now. Would need to modify file save location of "box" jpg images, while using textdetector.py (for example).
+Would need to install the "textdistance" package as well:
+`pip install textdistance`
 
 
+------------------------------------
 
+**How to Run the Script**
+
+Step 1: Go to the "textdetector" directory found in the repository.
+
+Example: `cd Documents\GitHub\MTG-Image-Titles-To-Text\textdetector`
+
+Step 2: Using python to run the program. (Be sure to make sure each dimension is divisible by 32)
+
+Example:<br>
+`python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096`
+`python textdetector.py --input tegwyll-nonlands-Copy.jpg --width 3072 --height 2656`
+`python textdetector.py --input 1_python-ocr.jpg --width 800 --height 352`
+
+Note: Try to ensure that the image's height is not too large, since certain dimensions can cause the image to be rotated by EAST algorithm. (As seen when using: `python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064`)
+
+------------------------------------
+
+**What the Script Does**
+
+- First uses EAST text detections to help detect the words off of the image of cards via bounding boxes.
+- Then would use merging of bounding box to get a box around each title/name.
+- Slight rotations of merged images gets applied before using text recognition algorithm on it (Pytesseract).
+- Compare strings found for each rotated image to existing names gathered from data (Extracted from mtgjson.com), and keep the "best"/ones with the most similarities to existing MTG card name.
+
+Note: Did not use OSD since it could not detect rotations less than 90 degrees with it.
+
+------------------------------------
+
+**TODO**
+Use OSD when image get rotated by EAST in order to rotate back?
 
 
 **References**
@@ -75,10 +91,8 @@ https://learnopencv.com/deep-learning-based-text-detection-using-opencv-c-python
 
 StackOverflow on how to install multiple packages with one command: https://stackoverflow.com/questions/9956741/how-to-install-multiple-python-packages-at-once-using-pip
 
-
 (Paper) A good read. Skimmed through the progress made so far by Quentin Fortier. Should be able to learn some stuff from here:
 https://fortierq.github.io/mtgscan-ocr-azure-flask-celery-socketio/
-
 
 Optical Character Recognition Using TensorFlow:
 https://medium.com/analytics-vidhya/optical-character-recognition-using-tensorflow-533061285dd3
@@ -107,11 +121,5 @@ https://www.geeksforgeeks.org/how-to-rotate-an-image-using-python/
 Image Processing in Python with Pillow (Cropping Section)
 https://auth0.com/blog/image-processing-in-python-with-pillow/
 
-# Archived Material
 
-Use this link: https://www.imagetotext.info/jpg-to-word
 
-Then:
-- Save output from link into a text file
-- (Might need to remove noise somehow)
-- Run autocorrector.py to have corrections in case missing minor spelling.
