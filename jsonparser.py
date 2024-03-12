@@ -29,8 +29,17 @@ print(CardTypes_data["data"]["types"]["artifact"]["subTypes"])
 with open('AtomicCards.json', 'r', encoding="utf8") as AtomicCards_file:
     AtomicCards_data = json.load(AtomicCards_file)
 
+
 #print(AtomicCards_data["data"]["Abzan Kin-Guard"])
-print(json.dumps(AtomicCards_data["data"]["Abzan Kin-Guard"], indent=4))
+#print(json.dumps(AtomicCards_data["data"]["Abzan Kin-Guard"], indent=4))
+print(json.dumps(AtomicCards_data["data"]["Abzan Kin-Guard"][0]["text"], indent=4))
+
+print("------")
+x = AtomicCards_data["data"]["Abzan Kin-Guard"][0]
+keysList = list(x.keys())
+print(keysList[:])
+print(len(x))
+print("------")
 
 keysList = list(AtomicCards_data["data"].keys())
 print(keysList[:100])
@@ -38,6 +47,7 @@ print(keysList[:100])
 counter = 0
 
 for x in keysList[:100]:
+    #print(x, counter, json.dumps(AtomicCards_data["data"][x][0]["text"]) )
     print(x, counter)
     counter = counter + 1
 
