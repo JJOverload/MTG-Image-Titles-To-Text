@@ -198,7 +198,7 @@ if __name__ == "__main__":
     if args.device == "cpu":
         net.setPreferableBackend(cv.dnn.DNN_TARGET_CPU)
         print("Using CPU device")
-    elif args.device == "gpu":
+    elif args.device == "gpu": #not tested
         net.setPreferableBackend(cv.dnn.DNN_BACKEND_CUDA)
         net.setPreferableTarget(cv.dnn.DNN_TARGET_CUDA)
         print("Using GPU device")
@@ -401,7 +401,7 @@ if __name__ == "__main__":
         #Recording endtime and outputing elapsed time
         endtime = datetime.datetime.now()
         elapsedtime = endtime - starttime
-        print(elapsedtime)
+        print("Elapsed Time:", elapsedtime)
         
 
 
