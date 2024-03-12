@@ -35,25 +35,26 @@ with open('AtomicCards.json', 'r', encoding="utf8") as AtomicCards_file:
 print(json.dumps(AtomicCards_data["data"]["Abzan Kin-Guard"][0]["text"], indent=4))
 
 print("------")
-x = AtomicCards_data["data"]["Abzan Kin-Guard"][0]
-keysList = list(x.keys())
-print(keysList[:])
-print(len(x))
-print("------")
+x = AtomicCards_data["data"]["Binding Geist // Spectral Binding"]
+for y in range(0, len(x)):
+    #keysList = list(x.keys())
+    #print(keysList[:])
+    print(x[y]["text"])
+    print("------")
 
 keysList = list(AtomicCards_data["data"].keys())
-print(keysList[:100])
+#print(keysList[:100])
 
 counter = 0
 
 for x in keysList[:100]:
     #print(x, counter, json.dumps(AtomicCards_data["data"][x][0]["text"]) )
-    print(x, counter)
+    #print(x, counter)
     counter = counter + 1
 
 print("--------------------------------------------------------")
 for x in keysList[100:200]:
-    print(x, counter)
+    #print(x, counter)
     counter = counter + 1
 
 
