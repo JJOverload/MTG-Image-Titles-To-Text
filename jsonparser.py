@@ -11,19 +11,6 @@ with open('CardTypes.json', 'r', encoding="utf8") as CardTypes_file:
 print(CardTypes_data["data"]["types"]["artifact"]["subTypes"])
 '''
 
-#Excerpt from CardTypes.json JSON file
-"""
-"data": {
-        "types": {
-            "artifact": {
-                "subTypes": [
-                    "Attraction",
-                    "Blood",
-                    "Clue",
-                    "Contraption",
-                    "Equipment",
-                    ...
-"""
 
 
 with open('AtomicCards.json', 'r', encoding="utf8") as AtomicCards_file:
@@ -39,7 +26,7 @@ x = AtomicCards_data["data"]["Binding Geist // Spectral Binding"]
 for y in range(0, len(x)):
     #keysList = list(x.keys())
     #print(keysList[:])
-    print(x[y]["text"])
+    print(x[y]["text"])                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
     print("------")
 
 keysList = list(AtomicCards_data["data"].keys())
