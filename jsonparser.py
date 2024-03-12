@@ -11,39 +11,45 @@ with open('CardTypes.json', 'r', encoding="utf8") as CardTypes_file:
 print(CardTypes_data["data"]["types"]["artifact"]["subTypes"])
 '''
 
-#Excerpt from CardTypes.json JSON file
-"""
-"data": {
-        "types": {
-            "artifact": {
-                "subTypes": [
-                    "Attraction",
-                    "Blood",
-                    "Clue",
-                    "Contraption",
-                    "Equipment",
-                    ...
-"""
 
 
 with open('AtomicCards.json', 'r', encoding="utf8") as AtomicCards_file:
     AtomicCards_data = json.load(AtomicCards_file)
 
+
 #print(AtomicCards_data["data"]["Abzan Kin-Guard"])
-print(json.dumps(AtomicCards_data["data"]["Abzan Kin-Guard"], indent=4))
+#print(json.dumps(AtomicCards_data["data"]["Abzan Kin-Guard"], indent=4))
+print(json.dumps(AtomicCards_data["data"]["Abzan Kin-Guard"][0]["text"], indent=4))
+
+print("------")
+x = AtomicCards_data["data"]["Binding Geist // Spectral Binding"]
+for y in range(0, len(x)):
+    #keysList = list(x.keys())
+    #print(keysList[:])
+    print(x[y]["text"])                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                       
+    print("------")
 
 keysList = list(AtomicCards_data["data"].keys())
-print(keysList[:100])
+#print(keysList[:100])
+
+print("------------------------Starting First 100 Keys--------------------------------")
 
 counter = 0
 
-for x in keysList[:100]:
-    print(x, counter)
+for key in keysList[:100]:
+    #print(key, counter, json.dumps(AtomicCards_data["data"][key][0]["text"]) )
+    #print(key, counter)
+    for y in range(0, len(AtomicCards_data["data"][key])):
+        print(key, json.dumps(AtomicCards_data["data"][key][y]["text"]), counter)
+        print("------")
     counter = counter + 1
 
-print("--------------------------------------------------------")
-for x in keysList[100:200]:
-    print(x, counter)
+print("-------------------------Starting Next 100 Keys-------------------------------")
+for key in keysList[100:200]:
+    #print(key, counter)
+    for y in range(0, len(AtomicCards_data["data"][key])):
+        print(key, json.dumps(AtomicCards_data["data"][key][y]["text"]), counter)
+        print("------")
     counter = counter + 1
 
 

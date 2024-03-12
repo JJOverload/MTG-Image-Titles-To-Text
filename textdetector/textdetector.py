@@ -1,4 +1,4 @@
-# Code from: https://learnopencv.com/deep-learning-based-text-detection-using-opencv-c-python/
+# Initial code from: https://learnopencv.com/deep-learning-based-text-detection-using-opencv-c-python/
 # Using this for reference as well: https://learnopencv.com/deep-learning-with-opencvs-dnn-module-a-definitive-guide/
 # https://github.com/spmallick/learnopencv/blob/master/TextDetectionEAST/textDetection.py
 # https://pyimagesearch.com/2021/01/19/image-masking-with-opencv/
@@ -12,6 +12,7 @@
 # python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064
 # python textdetector.py --input tegwyll-nonlands-Copy.jpg --width 3072 --height 2656
 # python textdetector.py --input 1_python-ocr.jpg --width 800 --height 352
+# python textdetector.py --input tegwyll-nonlands-Copy-censored.jpg --width 3072 --height 2656
 
 # Import for text detection
 import cv2 as cv
@@ -19,7 +20,7 @@ import math
 import argparse
 # Import for rectangle
 import numpy as np
-# Import for OSD (pytesseract)
+# Import for rotations (and pytesseract)
 from PIL import Image
 import pytesseract
 #for autocorrect
@@ -28,9 +29,15 @@ import numpy as np
 import textdistance
 import re
 from collections import Counter
-#for jsonparser
+# For jsonparser
 import json
+# For Timer
+import datetime
 
+# Recording start time for timer
+starttime = datetime.datetime.now()
+
+# Grabbing arguments from command line when executing command
 parser = argparse.ArgumentParser(description='Use this script to run text detection deep learning networks using OpenCV.')
 # Input argument
 parser.add_argument('--input', help='Path to input image or video file. Skip this argument to capture frames from a camera.')
@@ -191,7 +198,7 @@ if __name__ == "__main__":
     if args.device == "cpu":
         net.setPreferableBackend(cv.dnn.DNN_TARGET_CPU)
         print("Using CPU device")
-    elif args.device == "gpu":
+    elif args.device == "gpu": #not tested
         net.setPreferableBackend(cv.dnn.DNN_BACKEND_CUDA)
         net.setPreferableTarget(cv.dnn.DNN_TARGET_CUDA)
         print("Using GPU device")
@@ -387,8 +394,14 @@ if __name__ == "__main__":
 
         #display(im_fixed.resize(int(0.3*s) for s in im_fixed.size)) #comment for now, since does not work
         #print(pytesseract.image_to_string(im_fixed))
-
         
+
+
+
+        #Recording endtime and outputing elapsed time
+        endtime = datetime.datetime.now()
+        elapsedtime = endtime - starttime
+        print("Elapsed Time:", elapsedtime)
         
 
 
