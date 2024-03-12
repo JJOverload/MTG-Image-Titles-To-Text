@@ -32,16 +32,24 @@ for y in range(0, len(x)):
 keysList = list(AtomicCards_data["data"].keys())
 #print(keysList[:100])
 
+print("------------------------Starting First 100 Keys--------------------------------")
+
 counter = 0
 
-for x in keysList[:100]:
-    #print(x, counter, json.dumps(AtomicCards_data["data"][x][0]["text"]) )
-    #print(x, counter)
+for key in keysList[:100]:
+    #print(key, counter, json.dumps(AtomicCards_data["data"][key][0]["text"]) )
+    #print(key, counter)
+    for y in range(0, len(AtomicCards_data["data"][key])):
+        print(key, json.dumps(AtomicCards_data["data"][key][y]["text"]), counter)
+        print("------")
     counter = counter + 1
 
-print("--------------------------------------------------------")
-for x in keysList[100:200]:
-    #print(x, counter)
+print("-------------------------Starting Next 100 Keys-------------------------------")
+for key in keysList[100:200]:
+    #print(key, counter)
+    for y in range(0, len(AtomicCards_data["data"][key])):
+        print(key, json.dumps(AtomicCards_data["data"][key][y]["text"]), counter)
+        print("------")
     counter = counter + 1
 
 
