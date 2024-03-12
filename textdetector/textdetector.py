@@ -12,6 +12,7 @@
 # python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064
 # python textdetector.py --input tegwyll-nonlands-Copy.jpg --width 3072 --height 2656
 # python textdetector.py --input 1_python-ocr.jpg --width 800 --height 352
+# python textdetector.py --input tegwyll-nonlands-Copy-censored.jpg --width 3072 --height 2656
 
 # Import for text detection
 import cv2 as cv
