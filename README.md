@@ -59,6 +59,7 @@ Example:<br>
 `python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096`<br>
 `python textdetector.py --input tegwyll-nonlands-Copy.jpg --width 3072 --height 2656`<br>
 `python textdetector.py --input 1_python-ocr.jpg --width 800 --height 352`<br>
+`python textdetector.py --input tegwyll-nonlands-Copy-censored.jpg --width 3072 --height 2656`<br>
 
 Note: Try to ensure that the image's height is not too large relative to width, since certain dimensions can cause the image to be rotated sideways. (As seen when using: `python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064`)
 
@@ -76,7 +77,7 @@ Note: Did not use OSD since it could not detect rotations less than 90 degrees w
 ------------------------------------
 
 **TODO**
-Use OSD when image get rotated by EAST in order to rotate back?
+allow "better"(?) noise detection/analysis.
 
 
 **References**
