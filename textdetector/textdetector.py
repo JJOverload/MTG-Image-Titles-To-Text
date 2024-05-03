@@ -142,7 +142,7 @@ def calc_sim(text, obj):
     dist = x_dist + y_dist
     return(dist)
 
-def merge_algo(bboxes):
+def merge_algo(bboxes): #bboxes is a list of bounding boxes data
     for j in bboxes:
         for k in bboxes:
             if j == k: #continue on if we are comparing a box with itself
@@ -205,8 +205,8 @@ if __name__ == "__main__":
 
 
     # Create a new named window
-    kWinName = "EAST: An Efficient and Accurate Scene Text Detector"
-    cv.namedWindow(kWinName, cv.WINDOW_NORMAL)
+    #kWinName = "EAST: An Efficient and Accurate Scene Text Detector"
+    #cv.namedWindow(kWinName, cv.WINDOW_NORMAL)
     outputLayers = []
     outputLayers.append("feature_fusion/Conv_7/Sigmoid")
     outputLayers.append("feature_fusion/concat_3")
@@ -380,6 +380,10 @@ if __name__ == "__main__":
         # obj: xmin, ymin, xmax, ymax
         #merging frame2 and mask2 to make masked2 altered frame
         masked2 = cv.bitwise_and(frame2, frame2, mask=mask2)
+        # Spawn window
+        cv.namedWindow(kWinName, cv.WINDOW_NORMAL)
+        # Confirming name of window
+        kWinName = "MTG-Image-Titles-To-Text"
         # Display the frame
         cv.imshow(kWinName,frame)
         cv.imwrite("output.png", frame)
