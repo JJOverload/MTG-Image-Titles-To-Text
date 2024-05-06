@@ -380,10 +380,10 @@ if __name__ == "__main__":
         # obj: xmin, ymin, xmax, ymax
         #merging frame2 and mask2 to make masked2 altered frame
         masked2 = cv.bitwise_and(frame2, frame2, mask=mask2)
+        # Name of window
+        kWinName = "MTG-Image-Titles-To-Text"
         # Spawn window
         cv.namedWindow(kWinName, cv.WINDOW_NORMAL)
-        # Confirming name of window
-        kWinName = "MTG-Image-Titles-To-Text"
         # Display the frame
         cv.imshow(kWinName,frame)
         cv.imwrite("output.png", frame)
