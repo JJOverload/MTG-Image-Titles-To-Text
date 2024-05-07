@@ -30,18 +30,46 @@ with open('AtomicCards.json', 'r', encoding="utf8") as AtomicCards_file:
     AtomicCards_data = json.load(AtomicCards_file)
 #AtomicCards_data is a dictionary of dictionaries of...
 names = list(AtomicCards_data["data"].keys())
+print(names[:100])
+
+
+non_names = []
+for n in names: #TESTING FOR NOW, need to remove slicing later
+    for index in range(0, len(AtomicCards_data["data"][n])):
+        print("-Looking at: ", n, index)
+        #print("-Storing", AtomicCards_data["data"][n][index]["text"], "into non_names...")
+        if "text" in AtomicCards_data["data"][n][index]:
+            non_names.append(json.dumps(AtomicCards_data["data"][n][index]["text"]))
+        if "type" in AtomicCards_data["data"][n][index]:
+            non_names.append(json.dumps(AtomicCards_data["data"][n][index]["type"]))
 
 #print(names[:100])
+names = names + non_names
 
+
+testnameofcard = "Aegis Turtle"
 print("-----Printing out info with test statement using one-liner------")
-print(json.dumps(AtomicCards_data["data"]["Scion of Oona"], indent=4))
+print(json.dumps(AtomicCards_data["data"][testnameofcard], indent=4))
+
+if ("text" in AtomicCards_data["data"][testnameofcard][0]):    
+    print("-----Printing out info with test statement for text only------")
+    x = AtomicCards_data["data"][testnameofcard][0]["text"]
+    # convert into JSON and print the result as a JSON string:
+    y = json.dumps(x, indent=4)
+    print(y)
+else:
+    print("-----Info with test statement for text only DNE------")
+
+if ("type" in AtomicCards_data["data"][testnameofcard][0]):
+    print("-----Printing out info with test statement for text only 2------")
+    x = AtomicCards_data["data"][testnameofcard][0]["type"]
+    # convert into JSON and print the result as a JSON string:
+    y = json.dumps(x, indent=4)
+    print(y)
+else:
+    print("-----Info with test statement for text only 2 DNE------")
 
 
-print("-----Printing out info with test statement for text only------")
-x = AtomicCards_data["data"]["Scion of Oona"][0]["text"]
-# convert into JSON and print the result as a JSON string:
-y = json.dumps(x, indent=4)
-print(y)
 
 
 
@@ -66,6 +94,8 @@ else:
 '''
 
 V = set(names)
+
+
 print(f"-----The first fifteen names in the text are: \n{names[0:15]}-----") #sixteen or fifteen?
 print(f"-----There are {len(V)} unique names in the vocabulary.-----")
 
