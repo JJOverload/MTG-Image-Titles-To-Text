@@ -47,7 +47,7 @@ for n in names: #TESTING FOR NOW, need to remove slicing later
 names = names + non_names
 
 
-testnameofcard = "Aegis Turtle"
+testnameofcard = "Dimir Signet"
 print("-----Printing out info with test statement using one-liner------")
 print(json.dumps(AtomicCards_data["data"][testnameofcard], indent=4))
 

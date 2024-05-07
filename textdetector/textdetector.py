@@ -224,7 +224,7 @@ if __name__ == "__main__":
     non_names = [] # Second list of names
     for n in names:
         for index in range(0, len(AtomicCards_data["data"][n])):
-            print("-Looking at: ", n, index)
+            print("Looking at: ", n, "| 'Side' number:", index+1)
             #print("-Storing", AtomicCards_data["data"][n][index]["text"], "into non_names...")
             if "text" in AtomicCards_data["data"][n][index]:
                 non_names.append(json.dumps(AtomicCards_data["data"][n][index]["text"]))
@@ -380,10 +380,8 @@ if __name__ == "__main__":
                 print("---------------------------------------------")
             print("Best Name:\n", bestOutput) #output the "best" name extracted from among all the rotated images for this bounding box
             
-            if (bestOutput.iat[0,0] in non_names):
-                print("-----bestOutput Likely Non-name - Skipped-----")
-            elif (bestOutput.iat[0,2] <= 0.40):
-                print("-----bestOutput Likely Noise - Skipped-----")
+            if (bestOutput.iat[0,0] in non_names) or (bestOutput.iat[0,2] <= 0.40):
+                print("-----bestOutput Likely Noise/Non-name - Skipped-----")
             else: #If name is exising or is not "noise" due to low similarity
                 bestNameList.append((bestOutput.iat[0,0], bestOutput.iat[0,2]))
                 print("---------------------------------------------")
