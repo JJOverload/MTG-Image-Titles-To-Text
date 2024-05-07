@@ -77,7 +77,9 @@ Note: Did not use OSD since it could not detect rotations less than 90 degrees w
 ------------------------------------
 
 **TODO**
-allow "better"(?) noise detection/analysis.
+- allow "better"(?) noise detection/analysis.
+- add additional logic to handle double-faced/adventure cards
+- upgrade merging algorithm to handle "triple overlapping" bboxes
 
 
 **References**

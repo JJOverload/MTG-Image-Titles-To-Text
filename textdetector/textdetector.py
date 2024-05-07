@@ -216,12 +216,27 @@ if __name__ == "__main__":
 
     print("-----Opening Atomic Cards JSON------")
     names = []
-    #AtomicCards_data is a dictionary of dictionaries of...
+    # AtomicCards_data is a dictionary of dictionaries of...
     with open('AtomicCards.json', 'r', encoding="utf8") as AtomicCards_file:
         AtomicCards_data = json.load(AtomicCards_file)
-    #creating list/set of names
-    names = list(AtomicCards_data["data"].keys())
+    # creating list/set of names
+    names = list(AtomicCards_data["data"].keys()) # First list of names
+    non_names = [] # Second list of names
+    for n in names:
+        for index in range(0, len(AtomicCards_data["data"][n])):
+            print("Looking at: ", n, "| 'Side' number:", index+1)
+            #print("-Storing", AtomicCards_data["data"][n][index]["text"], "into non_names...")
+            if "text" in AtomicCards_data["data"][n][index]:
+                non_names.append(json.dumps(AtomicCards_data["data"][n][index]["text"]))
+            if "type" in AtomicCards_data["data"][n][index]:
+                non_names.append(json.dumps(AtomicCards_data["data"][n][index]["type"]))
+
+    # Non-names are also "vocab" we are using. Counting them as 
+    # "names" for simplicity. Might need to refractor if necessary
+    names = names + non_names
     V = set(names)
+    
+    
     #Counter of name frequency
     name_freq_dict = {}
     name_freq_dict = Counter(names)
@@ -233,6 +248,7 @@ if __name__ == "__main__":
         probs[k] = name_freq_dict[k]/Total
 
 
+    print("-----Starting While Looping (of one usually)------")
     while cv.waitKey(1) < 0:
         # Read frame
         hasFrame, frame = cap.read()
@@ -360,12 +376,15 @@ if __name__ == "__main__":
                 if tempSimilarity > maxSimilarity:
                     maxSimilarity = tempSimilarity
                     bestOutput = autocorrectOutput
-                print(path3, ":", imageToStrStr, ":", autocorrectOutput)
-            print("Best Name:", bestOutput) #output the "best" name extracted from among all the rotated images for this bounding box
-            if (bestOutput.iat[0,2] <= 0.35):
-                print("-----bestOutput Likely Noise - Skipped-----")
+                print(path3, ":", imageToStrStr, ":\n", autocorrectOutput)
+                print("---------------------------------------------")
+            print("Best Name:\n", bestOutput) #output the "best" name extracted from among all the rotated images for this bounding box
+            
+            if (bestOutput.iat[0,0] in non_names) or (bestOutput.iat[0,2] <= 0.40):
+                print("-----bestOutput Likely Noise/Non-name - Skipped-----")
             else: #If name is exising or is not "noise" due to low similarity
                 bestNameList.append((bestOutput.iat[0,0], bestOutput.iat[0,2]))
+                print("---------------------------------------------")
 
 
 
@@ -380,10 +399,10 @@ if __name__ == "__main__":
         # obj: xmin, ymin, xmax, ymax
         #merging frame2 and mask2 to make masked2 altered frame
         masked2 = cv.bitwise_and(frame2, frame2, mask=mask2)
+        # Name of window
+        kWinName = "MTG-Image-Titles-To-Text"
         # Spawn window
         cv.namedWindow(kWinName, cv.WINDOW_NORMAL)
-        # Confirming name of window
-        kWinName = "MTG-Image-Titles-To-Text"
         # Display the frame
         cv.imshow(kWinName,frame)
         cv.imwrite("output.png", frame)
