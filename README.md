@@ -86,8 +86,13 @@ Note: Did not use OSD since it could not detect rotations less than 90 degrees w
 **Notes for textdetector.py**
 
 Initial code from: https://learnopencv.com/deep-learning-based-text-detection-using-opencv-c-python/
-Using this for reference as well: https://learnopencv.com/deep-learning-with-opencvs-dnn-module-a-definitive-guide/
+
+Using this for reference as well: 
+
+https://learnopencv.com/deep-learning-with-opencvs-dnn-module-a-definitive-guide/
+
 https://github.com/spmallick/learnopencv/blob/master/TextDetectionEAST/textDetection.py
+
 https://pyimagesearch.com/2021/01/19/image-masking-with-opencv/
 
 Inspired by this code for applying merging of bounding boxes algorithm:
