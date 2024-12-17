@@ -1,19 +1,3 @@
-# Initial code from: https://learnopencv.com/deep-learning-based-text-detection-using-opencv-c-python/
-# Using this for reference as well: https://learnopencv.com/deep-learning-with-opencvs-dnn-module-a-definitive-guide/
-# https://github.com/spmallick/learnopencv/blob/master/TextDetectionEAST/textDetection.py
-# https://pyimagesearch.com/2021/01/19/image-masking-with-opencv/
-
-# Inspired by this code for applying merging of bounding boxes algorithm:
-# https://stackoverflow.com/questions/55593506/merge-the-bounding-boxes-near-by-into-one
-
-# Sample CMD commands:
-# cd Documents\GitHub\MTG-Image-Titles-To-Text\textdetector
-# python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096
-# python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064
-# python textdetector.py --input tegwyll-nonlands-Copy.jpg --width 3072 --height 2656
-# python textdetector.py --input 1_python-ocr.jpg --width 800 --height 352
-# python textdetector.py --input tegwyll-nonlands-Copy-censored.jpg --width 3072 --height 2656
-
 # Import for text detection
 import cv2 as cv
 import math
@@ -173,7 +157,7 @@ def mtg_autocorrect(input_word, V, name_freq_dict, probs):
     df = pd.DataFrame.from_dict(probs, orient='index').reset_index()
     df = df.rename(columns={'index':'Name', 0:'Prob'})
     df['Similarity'] = similarities
-    output = df.sort_values(['Similarity', 'Prob'], ascending=False).head(1)#.iat[0,0]
+    output = df.sort_values(['Similarity', 'Prob'], ascending=False).head(1) #.iat[0,0]
     #print("output:\n", output)
     #if output.iat[0,2] <= 0.1:
     #    return("")
@@ -232,7 +216,7 @@ if __name__ == "__main__":
                 non_names.append(json.dumps(AtomicCards_data["data"][n][index]["type"]))
 
     # Non-names are also "vocab" we are using. Counting them as 
-    # "names" for simplicity. Might need to refractor if necessary
+    # "names" for simplicity.
     names = names + non_names
     V = set(names)
     
@@ -360,7 +344,7 @@ if __name__ == "__main__":
 
             #saving variations of frames in rotations
             counter2 = 0
-            rotatelist = [10,9,8,7,6,5,4,3,2,1,0,-1,-2,-3,-4,-5,-6,-7,-8,-9,-10]
+            rotatelist = [8,7,6,5,4,3,2,1,0,-1,-2,-3,-4,-5,-6,-7,-8]
             masked3_copy = Image.open(path2)
             masked3_rotated = None
             maxSimilarity = 0.0
@@ -371,14 +355,15 @@ if __name__ == "__main__":
                 path3 = ".\\box_images\\box"+str(counter)+"_"+str(counter2)+".jpg"
                 masked3_rotated.save(path3)
                 imageToStrStr = pytesseract.image_to_string(masked3_rotated)
+                imageToStrStr = imageToStrStr.strip() #removing leading and trailing newlines/whitespace
                 autocorrectOutput = mtg_autocorrect(imageToStrStr, V, name_freq_dict, probs)
                 tempSimilarity = autocorrectOutput.iat[0,2]
                 if tempSimilarity > maxSimilarity:
                     maxSimilarity = tempSimilarity
                     bestOutput = autocorrectOutput
-                print(path3, ":", imageToStrStr, ":\n", autocorrectOutput)
+                print(path3 + ": '" + str(imageToStrStr) + "'\n" + str(autocorrectOutput))
                 print("---------------------------------------------")
-            print("Best Name:\n", bestOutput) #output the "best" name extracted from among all the rotated images for this bounding box
+            print("Best Name:\n" + str(bestOutput)) #output the "best" name extracted from among all the rotated images for this bounding box
             
             if (bestOutput.iat[0,0] in non_names) or (bestOutput.iat[0,2] <= 0.40):
                 print("-----bestOutput Likely Noise/Non-name - Skipped-----")
@@ -392,7 +377,7 @@ if __name__ == "__main__":
 
         print("-----Outputing Best Name List-----")
         print(bestNameList)
-        print("Length of bestNameList:", len(bestNameList))
+        print("Length of bestNameList: " + str(len(bestNameList)))
         for n, s in bestNameList:
             print(n)
         # text: xmin, ymin, xmax, ymax
@@ -408,18 +393,6 @@ if __name__ == "__main__":
         cv.imwrite("output.png", frame)
         cv.imwrite("Rec.jpg", masked)
         cv.imwrite("Rec2.jpg", masked2)
-
-        # applying OSD per individual box and printing out text after corrected rotation
-        #im = Image.open("Rec2.jpg")
-        #osd = pytesseract.image_to_osd(im, output_type="dict")
-        #rotate = osd['rotate']
-        #im_fixed = im.copy().rotate(rotate)
-
-        #display(im_fixed.resize(int(0.3*s) for s in im_fixed.size)) #comment for now, since does not work
-        #print(pytesseract.image_to_string(im_fixed))
-        
-
-
 
         #Recording endtime and outputing elapsed time
         endtime = datetime.datetime.now()
