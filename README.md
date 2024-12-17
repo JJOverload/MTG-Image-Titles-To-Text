@@ -76,10 +76,12 @@ Note: Did not use OSD since it could not detect rotations less than 90 degrees w
 
 ------------------------------------
 
-**TODO**
+**TODO in Consideration**
 - allow "better"(?) noise detection/analysis.
 - add additional logic to handle double-faced/adventure cards
 - upgrade merging algorithm to handle "triple overlapping" bboxes
+
+------------------------------------
 
 **Notes for textdetector.py**
 Initial code from: https://learnopencv.com/deep-learning-based-text-detection-using-opencv-c-python/
@@ -98,6 +100,7 @@ cd Documents\GitHub\MTG-Image-Titles-To-Text\textdetector
 `python textdetector.py --input 1_python-ocr.jpg --width 800 --height 352`<br>
 `python textdetector.py --input tegwyll-nonlands-Copy-censored.jpg --width 3072 --height 2656`<br>
 
+------------------------------------
 
 **References**
 
