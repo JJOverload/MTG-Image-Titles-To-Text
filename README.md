@@ -98,8 +98,8 @@ https://pyimagesearch.com/2021/01/19/image-masking-with-opencv/
 Inspired by this code for applying merging of bounding boxes algorithm:
 https://stackoverflow.com/questions/55593506/merge-the-bounding-boxes-near-by-into-one
 
-Sample CMD commands:
-cd Documents\GitHub\MTG-Image-Titles-To-Text\textdetector
+Sample CMD commands:<br>
+`cd Documents\GitHub\MTG-Image-Titles-To-Text\textdetector`<br>
 `python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096`<br>
 `python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064`<br>
 `python textdetector.py --input tegwyll-nonlands-Copy.jpg --width 3072 --height 2656`<br>
