@@ -1,19 +1,3 @@
-# Initial code from: https://learnopencv.com/deep-learning-based-text-detection-using-opencv-c-python/
-# Using this for reference as well: https://learnopencv.com/deep-learning-with-opencvs-dnn-module-a-definitive-guide/
-# https://github.com/spmallick/learnopencv/blob/master/TextDetectionEAST/textDetection.py
-# https://pyimagesearch.com/2021/01/19/image-masking-with-opencv/
-
-# Inspired by this code for applying merging of bounding boxes algorithm:
-# https://stackoverflow.com/questions/55593506/merge-the-bounding-boxes-near-by-into-one
-
-# Sample CMD commands:
-# cd Documents\GitHub\MTG-Image-Titles-To-Text\textdetector
-# python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096
-# python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064
-# python textdetector.py --input tegwyll-nonlands-Copy.jpg --width 3072 --height 2656
-# python textdetector.py --input 1_python-ocr.jpg --width 800 --height 352
-# python textdetector.py --input tegwyll-nonlands-Copy-censored.jpg --width 3072 --height 2656
-
 # Import for text detection
 import cv2 as cv
 import math
@@ -408,18 +392,6 @@ if __name__ == "__main__":
         cv.imwrite("output.png", frame)
         cv.imwrite("Rec.jpg", masked)
         cv.imwrite("Rec2.jpg", masked2)
-
-        # applying OSD per individual box and printing out text after corrected rotation
-        #im = Image.open("Rec2.jpg")
-        #osd = pytesseract.image_to_osd(im, output_type="dict")
-        #rotate = osd['rotate']
-        #im_fixed = im.copy().rotate(rotate)
-
-        #display(im_fixed.resize(int(0.3*s) for s in im_fixed.size)) #comment for now, since does not work
-        #print(pytesseract.image_to_string(im_fixed))
-        
-
-
 
         #Recording endtime and outputing elapsed time
         endtime = datetime.datetime.now()
