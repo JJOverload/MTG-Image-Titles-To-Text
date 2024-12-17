@@ -157,7 +157,7 @@ def mtg_autocorrect(input_word, V, name_freq_dict, probs):
     df = pd.DataFrame.from_dict(probs, orient='index').reset_index()
     df = df.rename(columns={'index':'Name', 0:'Prob'})
     df['Similarity'] = similarities
-    output = df.sort_values(['Similarity', 'Prob'], ascending=False).head(1)#.iat[0,0]
+    output = df.sort_values(['Similarity', 'Prob'], ascending=False).head(1) #.iat[0,0]
     #print("output:\n", output)
     #if output.iat[0,2] <= 0.1:
     #    return("")
@@ -216,7 +216,7 @@ if __name__ == "__main__":
                 non_names.append(json.dumps(AtomicCards_data["data"][n][index]["type"]))
 
     # Non-names are also "vocab" we are using. Counting them as 
-    # "names" for simplicity. Might need to refractor if necessary
+    # "names" for simplicity.
     names = names + non_names
     V = set(names)
     
@@ -344,7 +344,7 @@ if __name__ == "__main__":
 
             #saving variations of frames in rotations
             counter2 = 0
-            rotatelist = [10,9,8,7,6,5,4,3,2,1,0,-1,-2,-3,-4,-5,-6,-7,-8,-9,-10]
+            rotatelist = [8,7,6,5,4,3,2,1,0,-1,-2,-3,-4,-5,-6,-7,-8]
             masked3_copy = Image.open(path2)
             masked3_rotated = None
             maxSimilarity = 0.0
@@ -355,14 +355,15 @@ if __name__ == "__main__":
                 path3 = ".\\box_images\\box"+str(counter)+"_"+str(counter2)+".jpg"
                 masked3_rotated.save(path3)
                 imageToStrStr = pytesseract.image_to_string(masked3_rotated)
+                imageToStrStr = imageToStrStr.strip() #removing leading and trailing newlines/whitespace
                 autocorrectOutput = mtg_autocorrect(imageToStrStr, V, name_freq_dict, probs)
                 tempSimilarity = autocorrectOutput.iat[0,2]
                 if tempSimilarity > maxSimilarity:
                     maxSimilarity = tempSimilarity
                     bestOutput = autocorrectOutput
-                print(path3, ":", imageToStrStr, ":\n", autocorrectOutput)
+                print(path3 + ": '" + str(imageToStrStr) + "'\n" + str(autocorrectOutput))
                 print("---------------------------------------------")
-            print("Best Name:\n", bestOutput) #output the "best" name extracted from among all the rotated images for this bounding box
+            print("Best Name:\n" + str(bestOutput)) #output the "best" name extracted from among all the rotated images for this bounding box
             
             if (bestOutput.iat[0,0] in non_names) or (bestOutput.iat[0,2] <= 0.40):
                 print("-----bestOutput Likely Noise/Non-name - Skipped-----")
@@ -376,7 +377,7 @@ if __name__ == "__main__":
 
         print("-----Outputing Best Name List-----")
         print(bestNameList)
-        print("Length of bestNameList:", len(bestNameList))
+        print("Length of bestNameList: " + str(len(bestNameList)))
         for n, s in bestNameList:
             print(n)
         # text: xmin, ymin, xmax, ymax
