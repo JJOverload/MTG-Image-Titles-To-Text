@@ -232,173 +232,189 @@ if __name__ == "__main__":
         probs[k] = name_freq_dict[k]/Total
 
 
-    print("-----Starting While Looping (of one usually)------")
-    while cv.waitKey(1) < 0:
-        # Read frame
-        hasFrame, frame = cap.read()
-        if not hasFrame:
-            cv.waitKey()
-            break
+    print("-----Starting 'While' Looping (of one usually)------")
+    #while cv.waitKey(1) < 0:
+    # Read frame
+    hasFrame, frame = cap.read()
+    #if not hasFrame:
+        #cv.waitKey()
+        #break
 
-        # Get frame height and width
-        height_ = frame.shape[0]
-        width_ = frame.shape[1]
-        rW = width_ / float(inpWidth)
-        rH = height_ / float(inpHeight)
+    # Get frame height and width
+    height_ = frame.shape[0]
+    width_ = frame.shape[1]
+    rW = width_ / float(inpWidth)
+    rH = height_ / float(inpHeight)
 
-        # Create a 4D blob from frame.
-        blob = cv.dnn.blobFromImage(frame, 1.0, (inpWidth, inpHeight), (123.68, 116.78, 103.94), True, False)
+    # Create a 4D blob from frame.
+    blob = cv.dnn.blobFromImage(frame, 1.0, (inpWidth, inpHeight), (123.68, 116.78, 103.94), True, False)
 
-        # Run the model
-        net.setInput(blob)
-        output = net.forward(outputLayers)
-        t, _ = net.getPerfProfile()
-        label = 'Inference time: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
+    # Run the model
+    net.setInput(blob)
+    output = net.forward(outputLayers)
+    t, _ = net.getPerfProfile()
+    label = 'Inference time: %.2f ms' % (t * 1000.0 / cv.getTickFrequency())
 
-        
-        # have buffers for getting coordinates for rectangles
-        startCorner = (0, 0)
-        endCorner = (0, 0)
-        #creating mask layer to work on later...
-        mask = np.zeros(frame.shape[:2], dtype="uint8")
-        mask2 = np.zeros(frame.shape[:2], dtype="uint8")
-        #creating backup frame
-        frame2 = frame.copy()
+    
+    # have buffers for getting coordinates for rectangles
+    startCorner = (0, 0)
+    endCorner = (0, 0)
+    #creating mask layer to work on later...
+    mask = np.zeros(frame.shape[:2], dtype="uint8")
+    mask2 = np.zeros(frame.shape[:2], dtype="uint8")
+    #creating backup frame
+    frame2 = frame.copy()
 
-        # Get scores and geometry
-        scores = output[0]
-        geometry = output[1]
-        [boxes, confidences] = decode(scores, geometry, confThreshold)
-        # Apply NMS
-        indices = cv.dnn.NMSBoxesRotated(boxes, confidences, confThreshold, nmsThreshold) 
-        for i in indices:
-            wlist = []
-            hlist = []
-            # get 4 corners of the rotated rect
-            vertices = cv.boxPoints(boxes[i])
-            # scale the bounding box coordinates based on the respective ratios
-            for j in range(4):
-                vertices[j][0] *= rW
-                vertices[j][1] *= rH
-                #populating list for min/max getting and text isolation
-                wlist.append(int(vertices[j][0]))
-                hlist.append(int(vertices[j][1]))
-                print("Appended:", (int(vertices[j][0]), int(vertices[j][1]) ) )
-            print("Initial vertices for a box completed.")
-            # text: ymin, xmin, ymax, xmax
-            # obj: ymin, xmin, ymax, xmax
-            # order of parameters currently not synchronized with initial algorithm
-            xmin, ymin, xmax, ymax = min(wlist), min(hlist), max(wlist), max(hlist)
-            bbox.append((xmin, ymin, xmax, ymax))
-            for j in range(4):
-                p1 = (vertices[j][0], vertices[j][1])
-                p2 = (vertices[(j + 1) % 4][0], vertices[(j + 1) % 4][1])
-                p1 = (int(p1[0]), int(p1[1]))
-                #print("p1:",p1)
-                p2 = (int(p2[0]), int(p2[1]))
-                #print("p2:",p2)
+    # Get scores and geometry
+    scores = output[0]
+    geometry = output[1]
+    [boxes, confidences] = decode(scores, geometry, confThreshold)
+    # Apply NMS
+    indices = cv.dnn.NMSBoxesRotated(boxes, confidences, confThreshold, nmsThreshold) 
+    for i in indices:
+        wlist = []
+        hlist = []
+        # get 4 corners of the rotated rect
+        vertices = cv.boxPoints(boxes[i])
+        # scale the bounding box coordinates based on the respective ratios
+        for j in range(4):
+            vertices[j][0] *= rW
+            vertices[j][1] *= rH
+            #populating list for min/max getting and text isolation
+            wlist.append(int(vertices[j][0]))
+            hlist.append(int(vertices[j][1]))
+            print("Appended:", (int(vertices[j][0]), int(vertices[j][1]) ) )
+        print("Initial vertices for a box completed.")
+        # text: ymin, xmin, ymax, xmax
+        # obj: ymin, xmin, ymax, xmax
+        # order of parameters currently not synchronized with initial algorithm
+        xmin, ymin, xmax, ymax = min(wlist), min(hlist), max(wlist), max(hlist)
+        bbox.append((xmin, ymin, xmax, ymax))
+        for j in range(4):
+            p1 = (vertices[j][0], vertices[j][1])
+            p2 = (vertices[(j + 1) % 4][0], vertices[(j + 1) % 4][1])
+            p1 = (int(p1[0]), int(p1[1]))
+            #print("p1:",p1)
+            p2 = (int(p2[0]), int(p2[1]))
+            #print("p2:",p2)
 
-                # Drawing line
-                cv.line(frame, p1, p2, (0, 255, 0), 2, cv.LINE_AA)
-                #cv.putText(frame, "{:.3f}".format(confidences[i[0]]), (vertices[0][0], vertices[0][1]), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1, cv.LINE_AA)
-                # Making rectangle and then applying it as a mask
-                cv.rectangle(mask, (min(wlist), min(hlist)), (max(wlist), max(hlist)), 255, -1)
-                masked = cv.bitwise_and(frame2, frame2, mask=mask)
-        # Put efficiency information
-        cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
-        
-        # Test
-        print("-----Printing out inital bbox-----:")
-        for b in bbox:
-            print(b)
+            # Drawing line
+            cv.line(frame, p1, p2, (0, 255, 0), 2, cv.LINE_AA)
+            #cv.putText(frame, "{:.3f}".format(confidences[i[0]]), (vertices[0][0], vertices[0][1]), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1, cv.LINE_AA)
+            # Making rectangle and then applying it as a mask
+            cv.rectangle(mask, (min(wlist), min(hlist)), (max(wlist), max(hlist)), 255, -1)
+            masked = cv.bitwise_and(frame2, frame2, mask=mask)
+    # Put efficiency information
+    cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
+    
 
-        need_to_merge = True
-        #Merge the boxes
-        while need_to_merge:
-            need_to_merge, bbox = merge_algo(bbox)
+    print("-----Printing out inital bbox-----:")
+    for b in bbox:
+        print(b)
 
-        print("-----Printing out final bbox-----:")
-        bestNameList = []
-        counter = 0
-        for b in bbox:
-            counter += 1
-            print(counter, b)
-            # text: xmin, ymin, xmax, ymax
-            # obj: xmin, ymin, xmax, ymax
-            cv.rectangle(mask2, (b[0], b[1]), (b[2], b[3]), 255, -1)
-            
-            mask3 = np.zeros(frame2.shape[:2], dtype="uint8")
-            cv.rectangle(mask3, (b[0], b[1]), (b[2], b[3]), 255, -1)
-            masked3 = cv.bitwise_and(frame2, frame2, mask=mask3)
+    need_to_merge = True
+    #Merge the boxes
+    while need_to_merge:
+        need_to_merge, bbox = merge_algo(bbox)
 
-            # Likely would need to modify this line below if using Linux. Use this line to help with debugging. Would need to create box_images directory first.
-            path = ".\\box_images\\box"+str(counter)+".jpg"
-            cv.imwrite(path, masked3)
-
-            #The coordinates for the cropping box are (left, upper, right, lower)
-            image_to_be_cropped = Image.open(path)
-            box = (b[0], b[1], b[2], b[3])
-            cropped_image = image_to_be_cropped.crop(box)
-            path2 = ".\\box_images\\box"+str(counter)+"_"+"cropped"+".jpg"
-            cropped_image.save(path2)
-
-            #saving variations of frames in rotations
-            counter2 = 0
-            rotatelist = [8,7,6,5,4,3,2,1,0,-1,-2,-3,-4,-5,-6,-7,-8]
-            masked3_copy = Image.open(path2)
-            masked3_rotated = None
-            maxSimilarity = 0.0
-            bestOutput = mtg_autocorrect("", V, name_freq_dict, probs)
-            for degree in rotatelist:
-                counter2 += 1
-                masked3_rotated = masked3_copy.rotate(degree)
-                path3 = ".\\box_images\\box"+str(counter)+"_"+str(counter2)+".jpg"
-                masked3_rotated.save(path3)
-                imageToStrStr = pytesseract.image_to_string(masked3_rotated)
-                imageToStrStr = imageToStrStr.strip() #removing leading and trailing newlines/whitespace
-                autocorrectOutput = mtg_autocorrect(imageToStrStr, V, name_freq_dict, probs)
-                tempSimilarity = autocorrectOutput.iat[0,2]
-                if tempSimilarity > maxSimilarity:
-                    maxSimilarity = tempSimilarity
-                    bestOutput = autocorrectOutput
-                print(path3 + ": '" + str(imageToStrStr) + "'\n" + str(autocorrectOutput))
-                print("---------------------------------------------")
-            print("Best Name:\n" + str(bestOutput)) #output the "best" name extracted from among all the rotated images for this bounding box
-            
-            if (bestOutput.iat[0,0] in non_names) or (bestOutput.iat[0,2] <= 0.40):
-                print("-----bestOutput Likely Noise/Non-name - Skipped-----")
-            else: #If name is exising or is not "noise" due to low similarity
-                bestNameList.append((bestOutput.iat[0,0], bestOutput.iat[0,2]))
-                print("---------------------------------------------")
-
-
-
-            
-
-        print("-----Outputing Best Name List-----")
-        print(bestNameList)
-        print("Length of bestNameList: " + str(len(bestNameList)))
-        for n, s in bestNameList:
-            print(n)
+    print("-----Printing out final bbox-----:")
+    bestNameList = []
+    counter = 0
+    for b in bbox:
+        counter += 1
+        print(counter, b)
         # text: xmin, ymin, xmax, ymax
         # obj: xmin, ymin, xmax, ymax
-        #merging frame2 and mask2 to make masked2 altered frame
-        masked2 = cv.bitwise_and(frame2, frame2, mask=mask2)
-        # Name of window
-        kWinName = "MTG-Image-Titles-To-Text"
-        # Spawn window
-        cv.namedWindow(kWinName, cv.WINDOW_NORMAL)
-        # Display the frame
-        cv.imshow(kWinName,frame)
-        cv.imwrite("output.png", frame)
-        cv.imwrite("Rec.jpg", masked)
-        cv.imwrite("Rec2.jpg", masked2)
-
-        #Recording endtime and outputing elapsed time
-        endtime = datetime.datetime.now()
-        elapsedtime = endtime - starttime
-        print("Elapsed Time:", elapsedtime)
+        #Making rectangles for mask2, which will be be used to ultimately generate "Rec2.jpg"
+        cv.rectangle(mask2, (b[0], b[1]), (b[2], b[3]), 255, -1)
         
+        #Creating mask3 to create box image in "box_images" directory
+        mask3 = np.zeros(frame2.shape[:2], dtype="uint8")
+        cv.rectangle(mask3, (b[0], b[1]), (b[2], b[3]), 255, -1)
+        masked3 = cv.bitwise_and(frame2, frame2, mask=mask3)
+
+        # Likely would need to modify this line below if using Linux. Use this line to help with debugging. Would need to create box_images directory first.
+        path = ".\\box_images\\box"+str(counter)+".jpg"
+        cv.imwrite(path, masked3)
+
+        #The coordinates for the cropping box are (left, upper, right, lower)
+        image_to_be_cropped = Image.open(path)
+        box = (b[0], b[1], b[2], b[3])
+        cropped_image = image_to_be_cropped.crop(box)
+        path2 = ".\\box_images\\box"+str(counter)+"_"+"cropped"+".jpg"
+        cropped_image.save(path2)
+
+        #saving variations of frames in rotations
+        counter2 = 0
+        rotatelist = [6,5,4,3,2,1,0,-1,-2,-3,-4,-5,-6]
+        masked3_copy = Image.open(path2)
+        masked3_rotated = None
+        maxSimilarity = 0.0
+        bestOutput = mtg_autocorrect("", V, name_freq_dict, probs)
+        startcountdown = False
+        countdowncounter = 0
+        i = 0 #index for rotatelist
+        while(i < len(rotatelist)):
+            degree = rotatelist[i]
+            counter2 += 1
+            masked3_rotated = masked3_copy.rotate(degree)
+            path3 = ".\\box_images\\box"+str(counter)+"_"+str(counter2)+".jpg"
+            masked3_rotated.save(path3)
+            imageToStrStr = pytesseract.image_to_string(masked3_rotated)
+            imageToStrStr = imageToStrStr.strip() #removing leading and trailing newlines/whitespace
+            autocorrectOutput = mtg_autocorrect(imageToStrStr, V, name_freq_dict, probs)
+            tempSimilarity = autocorrectOutput.iat[0,2]
+            if tempSimilarity > maxSimilarity:
+                maxSimilarity = tempSimilarity
+                bestOutput = autocorrectOutput
+                countdowncounter = 0 #reset countdown counter if max similarity is updated
+            if maxSimilarity >= 0.6:
+                startcountdown = True
+            if startcountdown == True:
+                countdowncounter = countdowncounter + 1
+            print("countdowncounter: " + str(countdowncounter))
+            print(path3 + ": '" + str(imageToStrStr) + "'\n" + str(autocorrectOutput))
+            if countdowncounter >= 4:
+                print("~Skipping rest of rotations~")
+                break
+            i = i + 1
+            print("---------------------------------------------")
+        print("Best Name:\n" + str(bestOutput)) #output the "best" name extracted from among all the rotated images for this bounding box
+        
+        if (bestOutput.iat[0,0] in non_names) or (bestOutput.iat[0,2] <= 0.40):
+            print("-----bestOutput Likely Noise/Non-name - Skipped-----")
+        else: #If name is exising or is not "noise" due to low similarity
+            bestNameList.append((bestOutput.iat[0,0], bestOutput.iat[0,2]))
+            print("---------------------------------------------")
+
+
+
+        
+
+    print("-----Outputing Best Name List-----")
+    print(bestNameList)
+    print("Length of bestNameList: " + str(len(bestNameList)))
+    for n, s in bestNameList:
+        print(n)
+    # text: xmin, ymin, xmax, ymax
+    # obj: xmin, ymin, xmax, ymax
+    #merging frame2 and mask2 to make masked2 altered frame
+    masked2 = cv.bitwise_and(frame2, frame2, mask=mask2)
+    # Name of window
+    kWinName = "MTG-Image-Titles-To-Text"
+    # Spawn window
+    cv.namedWindow(kWinName, cv.WINDOW_NORMAL)
+    # Display the frame
+    cv.imshow(kWinName,frame)
+    cv.imwrite("output.png", frame)
+    cv.imwrite("Rec.jpg", masked)
+    cv.imwrite("Rec2.jpg", masked2)
+
+    #Recording endtime and outputing elapsed time
+    endtime = datetime.datetime.now()
+    elapsedtime = endtime - starttime
+    print("Elapsed Time:", elapsedtime)
+    
 
 
 
