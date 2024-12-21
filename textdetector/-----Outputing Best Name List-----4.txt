@@ -1,0 +1,65 @@
+-----Outputing Best Name List-----
+[('Counterspell', 0.6923076923076923), ('Disallow', 1.0), ('Quickling', 0.8), ('Evacuation', 1.0), ('Snap', 1.0), ('Puppeteer Clique', 1.0), ('Nettling Nuisance', 1.0), ('Malleable Impostor', 1.0), ('Fact or Fiction', 0.8235294117647058), ("Wayfarer's Bauble", 0.8823529411764706), ('Nightveil Sprite', 0.8333333333333334), ('Reconnaissance Mission', 0.9130434782608695), ('Faerie Seer', 1.0), ('Faerie Formation', 1.0), ("Illusionist's Gambit", 0.8095238095238095), ('Misleading Signpost', 0.8571428571428571), ('Faerie Bladecrafter', 0.8), ('Midnight Clock', 1.0), ('Theoretical Duplication', 0.88), ("Baral's Expertise", 0.7777777777777778), ('Cloud of Faeries', 0.7894736842105263), ('Reflections of Littjara', 1.0), ('Distant Melody', 1.0), ('Hypnotic Specter', 0.5238095238095238), ('Whip of Erebos', 1.0), ('Archmage of Echoes', 1.0), ('Shadow Puppeteers', 1.0), ('Mind Stone', 1.0), ('Alela, Cunning Conqueror', 0.84), ('Sower of Temptation', 1.0), ('Frantic Search', 1.0), ('Picklock Prankster // Free the Fae', 0.5151515151515151), ('Perplexing Test', 1.0), ('Talisman of Dominance', 1.0), ('Keep Watch', 0.75), ('Scion of Oona', 0.8), ('Halo Forager', 1.0), ('Spellscorn Coven // Take It Back', 0.4411764705882353), ('Arcane Denial', 1.0), ('Brazen Borrower // Petty Theft', 0.48275862068965525), ('Mocking Sprite', 1.0), ('Arcane Signet', 1.0), ('Vendilion Clique', 1.0), ("Tegwyll's Scouring", 0.7894736842105263), ('Reality Shift', 1.0), ('Glen Elendra Archmage', 1.0), ('Blightwing Bandit', 1.0), ('Diabolic Tutor', 1.0), ('Spell Stutter', 1.0), ('Fellwar Stone', 1.0), ('Kindred Dominance', 1.0), ('Dimir Signet', 1.0), ('Obyra, Dreaming Duelist', 1.0), ('Glen Elendra Liege', 0.8947368421052632), ('Dig Through Time', 1.0), ('Sol Ring', 1.0), ('Nightmare Unmaking', 1.0), ('Tegwyll, Duke of Splendor', 0.6875), ('Oona, Queen of the Fae', 1.0), ('Rankle, Master of Pranks', 1.0), ("Nymris, Oona's Trickster", 1.0)]
+Length of bestNameList: 61
+Counterspell
+Disallow
+Quickling
+Evacuation
+Snap
+Puppeteer Clique
+Nettling Nuisance
+Malleable Impostor
+Fact or Fiction
+Wayfarer's Bauble
+Nightveil Sprite
+Reconnaissance Mission
+Faerie Seer
+Faerie Formation
+Illusionist's Gambit
+Misleading Signpost
+Faerie Bladecrafter
+Midnight Clock
+Theoretical Duplication
+Baral's Expertise
+Cloud of Faeries
+Reflections of Littjara
+Distant Melody
+Hypnotic Specter
+Whip of Erebos
+Archmage of Echoes
+Shadow Puppeteers
+Mind Stone
+Alela, Cunning Conqueror
+Sower of Temptation
+Frantic Search
+Picklock Prankster // Free the Fae
+Perplexing Test
+Talisman of Dominance
+Keep Watch
+Scion of Oona
+Halo Forager
+Spellscorn Coven // Take It Back
+Arcane Denial
+Brazen Borrower // Petty Theft
+Mocking Sprite
+Arcane Signet
+Vendilion Clique
+Tegwyll's Scouring
+Reality Shift
+Glen Elendra Archmage
+Blightwing Bandit
+Diabolic Tutor
+Spell Stutter
+Fellwar Stone
+Kindred Dominance
+Dimir Signet
+Obyra, Dreaming Duelist
+Glen Elendra Liege
+Dig Through Time
+Sol Ring
+Nightmare Unmaking
+Tegwyll, Duke of Splendor
+Oona, Queen of the Fae
+Rankle, Master of Pranks
+Nymris, Oona's Trickster
+Elapsed Time: 0:34:23.516112
