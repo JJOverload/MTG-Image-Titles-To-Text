@@ -382,7 +382,7 @@ if __name__ == "__main__":
         print("Best Name:\n" + str(bestOutput)) #output the "best" name extracted from among all the rotated images for this bounding box
         
         if (bestOutput.iat[0,0] in non_names) or (bestOutput.iat[0,2] <= 0.40):
-            print("-----bestOutput Likely Noise/Non-name - Skipped-----")
+            print("-----Likely Noise/Non-name - Skipped-----")
         else: #If name is exising or is not "noise" due to low similarity
             bestNameList.append((bestOutput.iat[0,0], bestOutput.iat[0,2]))
             print("---------------------------------------------")
