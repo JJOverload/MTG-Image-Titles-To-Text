@@ -173,7 +173,8 @@ def convertTxtFileAnswerToList(aname):
     outputlist = []
     f = open(aname, "r")
     for x in f: #x is a line of the text file
-        outputlist.append(x)
+        outputlist.append(x.strip())
+        print("During conversion -> Added to outputlist:|" + str(x.strip()) + "|")
     f.close()
     return(outputlist)
 
@@ -188,7 +189,7 @@ def runAccuracyChecker(bestNameListNameOnly, answerList):
         if nameofb in a:
             correctcounter = correctcounter + 1
             print("nameofb: " + str(nameofb) + " (Correct)")
-            nameofa.remove(nameofb)
+            a.remove(nameofb)
         else: #incorrect
             incorrectcounter = incorrectcounter + 1
             print("nameofb: " + str(nameofb) + " (NOT Correct)")
@@ -448,15 +449,15 @@ if __name__ == "__main__":
     cv.imwrite("Rec.jpg", masked)
     cv.imwrite("Rec2.jpg", masked2)
 
-    #Recording endtime and outputing elapsed time
-    endtime = datetime.datetime.now()
-    elapsedtime = endtime - starttime
-    print("Elapsed Time:", elapsedtime)
-
+    #execute AccuracyChecker, if argument is present in run command
     if (answerfilename!=""):
         answerList = convertTxtFileAnswerToList(answerfilename)
         runAccuracyChecker(bestNameListNameOnly, answerList)
     
+    #Recording endtime and outputing elapsed time
+    endtime = datetime.datetime.now()
+    elapsedtime = endtime - starttime
+    print("Elapsed Time:", elapsedtime)
 
 
 
