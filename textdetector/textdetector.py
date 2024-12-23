@@ -48,6 +48,9 @@ parser.add_argument('--nms',type=float, default=0.4,
 
 parser.add_argument('--device', default="cpu", help="Device to inference on")
 
+# Location/name of answer .txt file
+parser.add_argument('--answername', type=str, default="", help="Location/name of answer .txt file")
+
 
 args = parser.parse_args()
 
@@ -163,6 +166,39 @@ def mtg_autocorrect(input_word, V, name_freq_dict, probs):
     #    return("")
     return(output)
 
+#Converting txt file true list for accuracy checker.
+#Input: Text file name or location
+#Output: List
+def convertTxtFileAnswerToList(aname):
+    outputlist = []
+    f = open(aname, "r")
+    for x in f: #x is a line of the text file
+        outputlist.append(x.strip())
+        print("During conversion -> Added to outputlist:|" + str(x.strip()) + "|")
+    f.close()
+    return(outputlist)
+
+#Finding out the accuracy of results compared to answer list
+def runAccuracyChecker(bestNameListNameOnly, answerList):
+    a = answerList
+    b = bestNameListNameOnly
+    correctcounter = 0
+    incorrectcounter = 0
+
+    for nameofb in b:
+        if nameofb in a:
+            correctcounter = correctcounter + 1
+            print("nameofb: " + str(nameofb) + " (Correct)")
+            a.remove(nameofb)
+        else: #incorrect
+            incorrectcounter = incorrectcounter + 1
+            print("nameofb: " + str(nameofb) + " (NOT Correct)")
+
+    print("---------------------------------------------")
+    print("correctcounter: " + str(correctcounter))
+    print("incorrectcounter: " + str(incorrectcounter))
+    print("Accuracy of bestNameListNameOnly results: " + str(correctcounter/(correctcounter+incorrectcounter)))
+
 
 if __name__ == "__main__":
     # Read and store arguments
@@ -171,11 +207,12 @@ if __name__ == "__main__":
     inpWidth = args.width
     inpHeight = args.height
     model = args.model
+    answerfilename = args.answername
 
     # Creating buffer/container for bounding boxes' vertices
     bbox = []
     # Setting distance limit for bounding box merging
-    dist_limit = 40
+    dist_limit = 50
 
     # Load network
     net = cv.dnn.readNet(model)
@@ -318,7 +355,8 @@ if __name__ == "__main__":
         need_to_merge, bbox = merge_algo(bbox)
 
     print("-----Printing out final bbox-----:")
-    bestNameList = []
+    bestNameList = [] #for best name list and similarity values
+    bestNameListNameOnly = []
     counter = 0
     for b in bbox:
         counter += 1
@@ -396,6 +434,7 @@ if __name__ == "__main__":
     print("Length of bestNameList: " + str(len(bestNameList)))
     for n, s in bestNameList:
         print(n)
+        bestNameListNameOnly.append(n)
     # text: xmin, ymin, xmax, ymax
     # obj: xmin, ymin, xmax, ymax
     #merging frame2 and mask2 to make masked2 altered frame
@@ -410,11 +449,15 @@ if __name__ == "__main__":
     cv.imwrite("Rec.jpg", masked)
     cv.imwrite("Rec2.jpg", masked2)
 
+    #execute AccuracyChecker, if argument is present in run command
+    if (answerfilename!=""):
+        answerList = convertTxtFileAnswerToList(answerfilename)
+        runAccuracyChecker(bestNameListNameOnly, answerList)
+    
     #Recording endtime and outputing elapsed time
     endtime = datetime.datetime.now()
     elapsedtime = endtime - starttime
     print("Elapsed Time:", elapsedtime)
-    
 
 
 
