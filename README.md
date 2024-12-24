@@ -76,7 +76,8 @@ Note: Try to ensure that the image's height is not too large relative to width, 
 - First uses EAST text detections to help detect the words off of the image of cards via bounding boxes.
 - Then would use merging of bounding box to get a box around each title/name.
 - Slight rotations of merged images gets applied before using text recognition algorithm on it (Pytesseract).
-- Compare strings found for each rotated image to existing names gathered from data (Extracted from mtgjson.com), and keep the "best"/ones with the most similarities to existing MTG card name. Kept names gets displayed at the end of the program.
+- Compare strings found for each rotated image to existing names gathered from data (Extracted from mtgjson.com), and keep the "best" ones with the most similarities to existing MTG card name. Kept names gets displayed at the end of the program.
+- Provides accuracy checking if the "--answername" option is used. Option requires name of file for answer. Answer file (example: a .txt file) should have the proper names listed, with a name per line.
 
 Note: Did not use OSD since it could not detect rotations less than 90 degrees with it.
 
@@ -85,6 +86,7 @@ Note: Did not use OSD since it could not detect rotations less than 90 degrees w
 **TODO in Consideration**
 - add additional logic to handle double-faced/adventure cards
 - Allow automatic refreshing of box image directory images (delete before populating)
+- Test --answername option for full path variation
 
 ------------------------------------
 
