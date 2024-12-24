@@ -206,10 +206,10 @@ def runAccuracyChecker(bestNameListNameOnly, answerList):
     print("---------------------------------------------")
     print("Remaining names in answer list (not guessed/not guessed correctly): ", answerList)
     print("---------------------------------------------")
-    print("correctcounter (Correct Guess Score): " + str(correctcounter))
-    print("incorrectcounter (Incorrect Guess Penalty): " + str(incorrectcounter))
-    print("leftovercounter (Leftover Penalty): " + str(leftovercounter))
-    print("Accuracy of bestNameListNameOnly results (correct/(correct+incorrect+leftover): " + str(correctcounter/(correctcounter+incorrectcounter+leftovercounter)))
+    print("Correct Guess Score (correctcounter): " + str(correctcounter))
+    print("Incorrect Guess Penalty (incorrectcounter): " + str(incorrectcounter))
+    print("Leftover Penalty (leftovercounter): " + str(leftovercounter))
+    print("Accuracy of Results Against Answer (correct/(correct+incorrect+leftover): " + str(correctcounter/(correctcounter+incorrectcounter+leftovercounter)))
 
 
 if __name__ == "__main__":
@@ -337,11 +337,18 @@ if __name__ == "__main__":
             wlist.append(int(vertices[j][0]))
             hlist.append(int(vertices[j][1]))
             print("Appended:", (int(vertices[j][0]), int(vertices[j][1]) ) )
-        print("Initial vertices for a box completed.")
+        
+        # distance for expanding bounding box.
+        # Combined values of expanding distances should not exceed dist_limit. dist_limit/2 can likely cause decrease in accuracy
+        expand_dist = int(dist_limit/5)  
+
+        print("-----Initial vertices for a box completed-----")
         # text: ymin, xmin, ymax, xmax
         # obj: ymin, xmin, ymax, xmax
         # order of parameters currently not synchronized with initial algorithm
-        xmin, ymin, xmax, ymax = min(wlist), min(hlist), max(wlist), max(hlist)
+
+        #integrating expanding distance to list of bounding box values
+        xmin, ymin, xmax, ymax = min(wlist)-expand_dist, min(hlist)-expand_dist, max(wlist)+expand_dist, max(hlist)+expand_dist
         bbox.append((xmin, ymin, xmax, ymax))
         for j in range(4):
             p1 = (vertices[j][0], vertices[j][1])
