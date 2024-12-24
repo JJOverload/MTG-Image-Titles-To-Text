@@ -57,11 +57,12 @@ Step 2: Using python to run the program. (Be sure to make sure each dimension is
 
 Sample CMD commands:<br>
 `cd Documents\GitHub\MTG-Image-Titles-To-Text\textdetector`<br>
+`python textdetector.py --input 1_python-ocr.jpg --width 800 --height 352`<br>
 `python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096`<br>
 `python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096 --answername CardPileSample1-list-answer.txt`<br>
+`python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096 --answername CardPileSample1-list-answer.txt > output.txt`<br>
 `python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064`<br>
 `python textdetector.py --input tegwyll-nonlands-Copy.jpg --width 3072 --height 2656`<br>
-`python textdetector.py --input 1_python-ocr.jpg --width 800 --height 352`<br>
 `python textdetector.py --input tegwyll-nonlands-Copy-censored.jpg --width 3072 --height 2656`<br>
 `python textdetector.py --input tegwyll-nonlands-Copy-censored.jpg --width 3072 --height 2656 --answername tegwyll-nonland-decklist-answer.txt`<br>
 
