@@ -1,15 +1,30 @@
 # TCG MultiScan
 
-**Setting Up EAST (An Efficient and Accurate Scene Text Detector) Code**
-
-More info on how to set up EAST found here in this link:<br>
-https://learnopencv.com/deep-learning-based-text-detection-using-opencv-c-python/
-
+A personal project for a TCG card title scanner. The goal is to have a tool that can recognize multiple cards in one go, in order to compile an accurate decklist of cards shown in a picture. Ideal scenario is to be compatible with pictures taken from modern phones nowadays.
 
 ------------------------------------
 
+**What the "textdetector" Script Does**
+
+- First uses EAST text detections to help detect the words off of the image of cards via bounding boxes.
+- Then would use merging of bounding box to get a box around each title/name.
+- Slight rotations of merged images gets applied before using text recognition algorithm on it (Pytesseract).
+- Compare strings found for each rotated image to existing names gathered from data (Extracted from mtgjson.com), and keep the "best" ones with the most similarities to existing MTG card name. Kept names gets displayed at the end of the program.
+- Provides accuracy checking if the "--answername" option is used. Option requires name of file for answer. Answer file (example: a .txt file) should have the proper names listed, with a name per line.
+
+Note: Did not use OSD since it could not detect rotations less than 90 degrees with it.
+
+------------------------------------
+
+**Installation Instructions**
+
+More info on how to set up EAST (An Efficient and Accurate Scene Text Detector) found here in this link:<br>
+https://learnopencv.com/deep-learning-based-text-detection-using-opencv-c-python/
+
+------------------------------------
 
 **Installing Tesseract**
+
 If wanting to use Tesseract. Will need to install it.
 ~~~
 For Windows (check "Windows" section):
@@ -30,18 +45,22 @@ For cv2 module in Linux:
 `pip install opencv-python`
 ~~~
 
------------------------------------------------------
+------------------------------------
 
 **Install Packages for Autocorrecter**
+
 If you don't have it already:
+
 `pip install wheel`
 
 then:
+
 `pip install pandas`
 
 `pip install Pyarrow`
 
 Would need to install the "textdistance" package as well:
+
 `pip install textdistance`
 
 
@@ -55,30 +74,29 @@ Example: `cd Documents\GitHub\MTG-Image-Titles-To-Text\textdetector`
 
 Step 2: Using python to run the program. (Be sure to make sure each dimension is divisible by 32)
 
-Sample CMD commands:<br>
-`python textdetector.py --input 1_python-ocr.jpg --width 800 --height 352`<br>
-`python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096`<br>
-`python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096 --answername CardPileSample1-list-answer.txt`<br>
-`python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096 --answername CardPileSample1-list-answer.txt > output_sample.txt`<br>
-`python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064`<br>
-`python textdetector.py --input tegwyll-nonlands-Copy.jpg --width 3072 --height 2656`<br>
-`python textdetector.py --input tegwyll-nonlands-Copy-censored.jpg --width 3072 --height 2656`<br>
-`python textdetector.py --input tegwyll-nonlands-Copy-censored.jpg --width 3072 --height 2656 --answername tegwyll-nonland-decklist-answer.txt`<br>
-`python textdetector.py --input tegwyll-nonlands-Copy-censored.jpg --width 3072 --height 2656 --answername tegwyll-nonland-decklist-answer.txt > output_tegwyll.txt`<br>
+Sample CMD commands:
+
+`python textdetector.py --input 1_python-ocr.jpg --width 800 --height 352`
+
+`python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096`
+
+`python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096 --answername CardPileSample1-list-answer.txt`
+
+`python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096 --answername CardPileSample1-list-answer.txt > output_sample.txt`
+
+`python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064`
+
+`python textdetector.py --input tegwyll-nonlands-Copy.jpg --width 3072 --height 2656`
+
+`python textdetector.py --input tegwyll-nonlands-Copy-censored.jpg --width 3072 --height 2656`
+
+`python textdetector.py --input tegwyll-nonlands-Copy-censored.jpg --width 3072 --height 2656 --answername tegwyll-nonland-decklist-answer.txt`
+
+`python textdetector.py --input tegwyll-nonlands-Copy-censored.jpg --width 3072 --height 2656 --answername tegwyll-nonland-decklist-answer.txt > output_tegwyll.txt`
+
 
 Note: Try to ensure that the image's height is not too large relative to width, since certain dimensions can cause the image to be rotated sideways. (As seen when using: `python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064`)
 
-------------------------------------
-
-**What the Script Does**
-
-- First uses EAST text detections to help detect the words off of the image of cards via bounding boxes.
-- Then would use merging of bounding box to get a box around each title/name.
-- Slight rotations of merged images gets applied before using text recognition algorithm on it (Pytesseract).
-- Compare strings found for each rotated image to existing names gathered from data (Extracted from mtgjson.com), and keep the "best" ones with the most similarities to existing MTG card name. Kept names gets displayed at the end of the program.
-- Provides accuracy checking if the "--answername" option is used. Option requires name of file for answer. Answer file (example: a .txt file) should have the proper names listed, with a name per line.
-
-Note: Did not use OSD since it could not detect rotations less than 90 degrees with it.
 
 ------------------------------------
 
