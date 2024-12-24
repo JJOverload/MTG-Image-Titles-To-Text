@@ -180,24 +180,36 @@ def convertTxtFileAnswerToList(aname):
 
 #Finding out the accuracy of results compared to answer list
 def runAccuracyChecker(bestNameListNameOnly, answerList):
-    a = answerList
-    b = bestNameListNameOnly
     correctcounter = 0
     incorrectcounter = 0
+    leftovercounter = 0
 
-    for nameofb in b:
-        if nameofb in a:
+    print("Length of bestNameListNameOnly: " + str(len(bestNameListNameOnly)))
+    print("Length of answerList: " + str(len(answerList)))
+
+    #OCR & autocorrector result list (bestNameListNameOnly) might be less in length compared to answerList
+    if len(bestNameListNameOnly) < len(answerList):
+        #leftover names not mentioned in result list counts as incorrect as well.
+        leftovercounter = len(answerList) - len(bestNameListNameOnly)
+
+    #checking each best name against answerList
+    for nameofb in bestNameListNameOnly:
+        if nameofb in answerList:
             correctcounter = correctcounter + 1
             print("nameofb: " + str(nameofb) + " (Correct)")
-            a.remove(nameofb)
+            answerList.remove(nameofb)
         else: #incorrect
             incorrectcounter = incorrectcounter + 1
-            print("nameofb: " + str(nameofb) + " (NOT Correct)")
+            print("nameofb: " + str(nameofb) + " ***(NOT Correct)***")
 
+    
     print("---------------------------------------------")
-    print("correctcounter: " + str(correctcounter))
-    print("incorrectcounter: " + str(incorrectcounter))
-    print("Accuracy of bestNameListNameOnly results: " + str(correctcounter/(correctcounter+incorrectcounter)))
+    print("Remaining names in answer list (not guessed/not guessed correctly): ", answerList)
+    print("---------------------------------------------")
+    print("correctcounter (Correct Guess Score): " + str(correctcounter))
+    print("incorrectcounter (Incorrect Guess Penalty): " + str(incorrectcounter))
+    print("leftovercounter (Leftover Penalty): " + str(leftovercounter))
+    print("Accuracy of bestNameListNameOnly results (correct/(correct+incorrect+leftover): " + str(correctcounter/(correctcounter+incorrectcounter+leftovercounter)))
 
 
 if __name__ == "__main__":
@@ -269,7 +281,7 @@ if __name__ == "__main__":
         probs[k] = name_freq_dict[k]/Total
 
 
-    print("-----Starting 'While' Looping (of one usually)------")
+    print("-----Starting Reading of Image------")
     #while cv.waitKey(1) < 0:
     # Read frame
     hasFrame, frame = cap.read()
@@ -277,15 +289,18 @@ if __name__ == "__main__":
         #cv.waitKey()
         #break
 
+    print("-----Getting Frame Height and Width------")
     # Get frame height and width
     height_ = frame.shape[0]
     width_ = frame.shape[1]
     rW = width_ / float(inpWidth)
     rH = height_ / float(inpHeight)
 
+    print("-----Create a 4D Blob from Frame------")
     # Create a 4D blob from frame.
     blob = cv.dnn.blobFromImage(frame, 1.0, (inpWidth, inpHeight), (123.68, 116.78, 103.94), True, False)
 
+    print("-----Running the Model------")
     # Run the model
     net.setInput(blob)
     output = net.forward(outputLayers)
@@ -302,6 +317,7 @@ if __name__ == "__main__":
     #creating backup frame
     frame2 = frame.copy()
 
+    print("-----Getting the Scores and Geometry------")
     # Get scores and geometry
     scores = output[0]
     geometry = output[1]
@@ -345,7 +361,7 @@ if __name__ == "__main__":
     cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
     
 
-    print("-----Printing out inital bbox-----:")
+    print("-----Printing Out Inital \"bboxes\"-----:")
     for b in bbox:
         print(b)
 
@@ -354,7 +370,7 @@ if __name__ == "__main__":
     while need_to_merge:
         need_to_merge, bbox = merge_algo(bbox)
 
-    print("-----Printing out final bbox-----:")
+    print("-----Printing Out Final \"bboxes\"-----:")
     bestNameList = [] #for best name list and similarity values
     bestNameListNameOnly = []
     counter = 0
@@ -424,6 +440,7 @@ if __name__ == "__main__":
         else: #If name is exising or is not "noise" due to low similarity
             bestNameList.append((bestOutput.iat[0,0], bestOutput.iat[0,2]))
             print("---------------------------------------------")
+        print("")
 
 
 
@@ -435,16 +452,20 @@ if __name__ == "__main__":
     for n, s in bestNameList:
         print(n)
         bestNameListNameOnly.append(n)
+
     # text: xmin, ymin, xmax, ymax
     # obj: xmin, ymin, xmax, ymax
     #merging frame2 and mask2 to make masked2 altered frame
     masked2 = cv.bitwise_and(frame2, frame2, mask=mask2)
+    ####
     # Name of window
-    kWinName = "MTG-Image-Titles-To-Text"
+    #kWinName = "MTG-Image-Titles-To-Text"
     # Spawn window
-    cv.namedWindow(kWinName, cv.WINDOW_NORMAL)
+    #cv.namedWindow(kWinName, cv.WINDOW_NORMAL)
+    
     # Display the frame
-    cv.imshow(kWinName,frame)
+    #cv.imshow(kWinName,frame)
+    ####
     cv.imwrite("output.png", frame)
     cv.imwrite("Rec.jpg", masked)
     cv.imwrite("Rec2.jpg", masked2)

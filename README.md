@@ -55,11 +55,15 @@ Example: `cd Documents\GitHub\MTG-Image-Titles-To-Text\textdetector`
 
 Step 2: Using python to run the program. (Be sure to make sure each dimension is divisible by 32)
 
-Example:<br>
+Sample CMD commands:<br>
+`cd Documents\GitHub\MTG-Image-Titles-To-Text\textdetector`<br>
 `python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096`<br>
+`python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096 --answername CardPileSample1-list-answer.txt`<br>
+`python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064`<br>
 `python textdetector.py --input tegwyll-nonlands-Copy.jpg --width 3072 --height 2656`<br>
 `python textdetector.py --input 1_python-ocr.jpg --width 800 --height 352`<br>
 `python textdetector.py --input tegwyll-nonlands-Copy-censored.jpg --width 3072 --height 2656`<br>
+`python textdetector.py --input tegwyll-nonlands-Copy-censored.jpg --width 3072 --height 2656 --answername tegwyll-nonland-decklist-answer.txt`<br>
 
 Note: Try to ensure that the image's height is not too large relative to width, since certain dimensions can cause the image to be rotated sideways. (As seen when using: `python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064`)
 
@@ -77,9 +81,8 @@ Note: Did not use OSD since it could not detect rotations less than 90 degrees w
 ------------------------------------
 
 **TODO in Consideration**
-- allow "better"(?) noise detection/analysis.
 - add additional logic to handle double-faced/adventure cards
-- upgrade merging algorithm to handle "triple overlapping" bboxes
+
 
 ------------------------------------
 
@@ -98,13 +101,6 @@ https://pyimagesearch.com/2021/01/19/image-masking-with-opencv/
 Inspired by this code for applying merging of bounding boxes algorithm:
 https://stackoverflow.com/questions/55593506/merge-the-bounding-boxes-near-by-into-one
 
-Sample CMD commands:<br>
-`cd Documents\GitHub\MTG-Image-Titles-To-Text\textdetector`<br>
-`python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096`<br>
-`python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064`<br>
-`python textdetector.py --input tegwyll-nonlands-Copy.jpg --width 3072 --height 2656`<br>
-`python textdetector.py --input 1_python-ocr.jpg --width 800 --height 352`<br>
-`python textdetector.py --input tegwyll-nonlands-Copy-censored.jpg --width 3072 --height 2656`<br>
 
 ------------------------------------
 
