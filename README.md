@@ -1,4 +1,4 @@
-# MTG-Image-Titles-To-Text
+# TCG MultiScan
 
 **Setting Up EAST (An Efficient and Accurate Scene Text Detector) Code**
 
@@ -56,7 +56,6 @@ Example: `cd Documents\GitHub\MTG-Image-Titles-To-Text\textdetector`
 Step 2: Using python to run the program. (Be sure to make sure each dimension is divisible by 32)
 
 Sample CMD commands:<br>
-`cd Documents\GitHub\MTG-Image-Titles-To-Text\textdetector`<br>
 `python textdetector.py --input 1_python-ocr.jpg --width 800 --height 352`<br>
 `python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096`<br>
 `python textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096 --answername CardPileSample1-list-answer.txt`<br>
@@ -87,6 +86,7 @@ Note: Did not use OSD since it could not detect rotations less than 90 degrees w
 - add additional logic to handle double-faced/adventure cards
 - Allow automatic refreshing of box image directory images (delete before populating)
 - Test --answername option for full path variation
+- Focus on other TCG card names
 
 ------------------------------------
 
