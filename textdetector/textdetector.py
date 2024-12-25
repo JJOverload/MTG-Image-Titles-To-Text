@@ -224,7 +224,7 @@ if __name__ == "__main__":
     # Creating buffer/container for bounding boxes' vertices
     bbox = []
     # Setting distance limit for bounding box merging
-    dist_limit = 50
+    dist_limit = 40
 
     # Load network
     net = cv.dnn.readNet(model)
@@ -245,16 +245,19 @@ if __name__ == "__main__":
     outputLayers.append("feature_fusion/concat_3")
 
     # Open a video file or an image file or a camera stream
-    cap = cv.VideoCapture(args.input if args.input else 0)
+    #cap = cv.VideoCapture(args.input if args.input else 0)
+    #cap = cv.VideoCapture(args.input)
+    cap = cv.imread(args.input)
 
     print("-----Opening Atomic Cards JSON------")
     names = []
-    # AtomicCards_data is a dictionary of dictionaries of...
+    non_names = [] # Second list of names
+    # AtomicCards_data is a dictionary of dictionaries of MTG card data...
     with open('AtomicCards.json', 'r', encoding='utf-8') as AtomicCards_file:
         AtomicCards_data = json.load(AtomicCards_file)
     # creating list/set of names
     names = list(AtomicCards_data["data"].keys()) # First list of names
-    non_names = [] # Second list of names
+    
     for n in names:
         for index in range(0, len(AtomicCards_data["data"][n])):
             print("Looking at: ", n, "| 'Side' number:", index+1)
@@ -264,8 +267,7 @@ if __name__ == "__main__":
             if "type" in AtomicCards_data["data"][n][index]:
                 non_names.append(json.dumps(AtomicCards_data["data"][n][index]["type"]))
 
-    # Non-names are also "vocab" we are using. Counting them as 
-    # "names" for simplicity.
+    # Non-names are also "vocab" we are using. Counting them as "names" for simplicity.
     names = names + non_names
     V = set(names)
     
@@ -284,7 +286,9 @@ if __name__ == "__main__":
     print("-----Starting Reading of Image------")
     #while cv.waitKey(1) < 0:
     # Read frame
-    hasFrame, frame = cap.read()
+    #hasFrame, frame = cap.read()
+    frame = cap
+
     #if not hasFrame:
         #cv.waitKey()
         #break
@@ -340,7 +344,8 @@ if __name__ == "__main__":
         
         # distance for expanding bounding box.
         # Combined values of expanding distances should not exceed dist_limit. dist_limit/2 can likely cause decrease in accuracy
-        expand_dist = int(dist_limit/5)  
+        #expand_dist = int(dist_limit/10)
+        expand_dist = 0  
 
         print("-----Initial vertices for a box completed-----")
         # text: ymin, xmin, ymax, xmax
@@ -362,7 +367,7 @@ if __name__ == "__main__":
             cv.line(frame, p1, p2, (0, 255, 0), 2, cv.LINE_AA)
             #cv.putText(frame, "{:.3f}".format(confidences[i[0]]), (vertices[0][0], vertices[0][1]), cv.FONT_HERSHEY_SIMPLEX, 0.5, (255, 0, 0), 1, cv.LINE_AA)
             # Making rectangle and then applying it as a mask
-            cv.rectangle(mask, (min(wlist), min(hlist)), (max(wlist), max(hlist)), 255, -1)
+            cv.rectangle(mask, (min(wlist)-expand_dist, min(hlist)-expand_dist), (max(wlist)+expand_dist, max(hlist)+expand_dist), 255, -1)
             masked = cv.bitwise_and(frame2, frame2, mask=mask)
     # Put efficiency information
     cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
@@ -393,6 +398,8 @@ if __name__ == "__main__":
         mask3 = np.zeros(frame2.shape[:2], dtype="uint8")
         cv.rectangle(mask3, (b[0], b[1]), (b[2], b[3]), 255, -1)
         masked3 = cv.bitwise_and(frame2, frame2, mask=mask3)
+
+        #add "putText" code around here
 
         # Likely would need to modify this line below if using Linux. Use this line to help with debugging. Would need to create box_images directory first.
         path = ".\\box_images\\box"+str(counter)+".jpg"
