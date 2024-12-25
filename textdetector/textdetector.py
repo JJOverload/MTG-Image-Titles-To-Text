@@ -250,7 +250,7 @@ if __name__ == "__main__":
     print("-----Opening Atomic Cards JSON------")
     names = []
     # AtomicCards_data is a dictionary of dictionaries of...
-    with open('AtomicCards.json', 'r', encoding="utf8") as AtomicCards_file:
+    with open('AtomicCards.json', 'r', encoding='utf-8') as AtomicCards_file:
         AtomicCards_data = json.load(AtomicCards_file)
     # creating list/set of names
     names = list(AtomicCards_data["data"].keys()) # First list of names
