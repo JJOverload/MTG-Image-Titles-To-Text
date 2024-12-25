@@ -6,13 +6,13 @@ A personal project for a TCG card title scanner. The goal is to have a tool that
 
 **What the "textdetector" Script Does**
 
-- First uses EAST text detections to help detect the words off of the image of cards via bounding boxes.
+- First uses EAST (An Efficient and Accurate Scene Text Detector) text detections to help detect the words off of the image of cards via bounding boxes.
 - Then would use merging of bounding box to get a box around each title/name.
 - Slight rotations of merged images gets applied before using text recognition algorithm on it (Pytesseract).
 - Compare strings found for each rotated image to existing names gathered from data (Extracted from mtgjson.com), and keep the "best" ones with the most similarities to existing MTG card name. Kept names gets displayed at the end of the program.
 - Provides accuracy checking if the "--answername" option is used. Option requires name of file for answer. Answer file (example: a .txt file) should have the proper names listed, with a name per line.
 
-Note: Did not use OSD since it could not detect rotations less than 90 degrees with it.
+Note: Did not use OSD since it could not handle rotations less than 90 degrees with it.
 
 ------------------------------------
 
@@ -44,6 +44,7 @@ For Ubuntu:
 For cv2 module in Linux:
 `pip install opencv-python`
 ~~~
+
 
 ------------------------------------
 
@@ -95,8 +96,9 @@ Sample CMD commands:
 `python textdetector.py --input tegwyll-nonlands-Copy-censored.jpg --width 3072 --height 2656 --answername tegwyll-nonland-decklist-answer.txt > output_tegwyll.txt`
 
 
-Note: Try to ensure that the image's height is not too large relative to width, since certain dimensions can cause the image to be rotated sideways. (As seen when using: `python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064`)
+NOTE: Try to ensure that the image's height is not too large relative to width, since certain dimensions can cause the image to be rotated sideways. (As seen when using: `python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064`)
 
+NOTE: textdetector code solely tested in Windows so far. If having issues with running in Linux, try changing the "path" variable assignment values (in the code) so that it uses forward slashes (/) instead of backslashes (\) prevalent in Windows.
 
 ------------------------------------
 
