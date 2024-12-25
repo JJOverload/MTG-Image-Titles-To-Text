@@ -71,11 +71,17 @@ Would need to install the "textdistance" package as well:
 
 Step 1: Go to the "textdetector" directory found in the repository.
 
-Example: `cd Documents\GitHub\MTG-Image-Titles-To-Text\textdetector`
+Example: `cd Documents\GitHub\TCG_MultiScan\textdetector`
 
-Step 2: Using python to run the program. (Be sure to make sure each dimension is divisible by 32)
+Step 2: If not there, make sure to create a new "box_images" directory in "textdetector" directory
 
-Sample CMD commands:
+Step 2.5: If not there, make sure to download "AtomicCards.json" and place it in the "textdetector" directory. Download site link is found here: https://mtgjson.com/downloads/all-files/ 
+
+NOTE: The latest "AtomicCards.json" I have tested so far from that site can cause errors, due to the inability to process some characters for redirection of output (E.g. When using "> output.txt" at the end of the command. At least one card name is the culprit, namely "Ratonhnhaké:ton")
+
+Step 3: Using Python to run the program. (Be sure to make sure each dimension is divisible by 32)
+
+Sample CMD (Windows) commands:
 
 `python textdetector.py --input 1_python-ocr.jpg --width 800 --height 352`
 
@@ -96,7 +102,7 @@ Sample CMD commands:
 `python textdetector.py --input tegwyll-nonlands-Copy-censored.jpg --width 3072 --height 2656 --answername tegwyll-nonland-decklist-answer.txt > output_tegwyll.txt`
 
 
-NOTE: Try to ensure that the image's height is not too large relative to width, since certain dimensions can cause the image to be rotated sideways. (As seen when using: `python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064`)
+NOTE: Try to ensure that the image's height is not too large relative to width, since certain dimensions can cause the image to be rotated sideways. (As seen when using: `python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064`. Check the output.png image at the end.) ***Fixed***
 
 NOTE: textdetector code solely tested in Windows so far. If having issues with running in Linux, try changing the "path" variable assignment values (in the code) so that it uses forward slashes (/) instead of backslashes (\\) prevalent in Windows.
 
