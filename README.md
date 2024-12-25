@@ -71,11 +71,15 @@ Would need to install the "textdistance" package as well:
 
 Step 1: Go to the "textdetector" directory found in the repository.
 
-Example: `cd Documents\GitHub\MTG-Image-Titles-To-Text\textdetector`
+Example: `cd Documents\GitHub\TCG_MultiScan\textdetector`
 
-Step 2: Using python to run the program. (Be sure to make sure each dimension is divisible by 32)
+Step 2: If not there, make sure to create a new "box_images" directory in "textdetector" directory
 
-Sample CMD commands:
+Step 2.5: If not there, make sure to download "AtomicCards.json" and place it in the "textdetector" directory. Download site link is found here: https://mtgjson.com/downloads/all-files/
+
+Step 3: Using Python to run the program. (Be sure to make sure each dimension is divisible by 32)
+
+Sample CMD (Windows) commands:
 
 `python textdetector.py --input 1_python-ocr.jpg --width 800 --height 352`
 
