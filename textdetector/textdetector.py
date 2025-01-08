@@ -17,6 +17,8 @@ from collections import Counter
 import json
 # For Timer
 import datetime
+# For replacing characters
+from module import helper
 
 # Recording start time for timer
 starttime = datetime.datetime.now()
@@ -204,11 +206,11 @@ def runAccuracyChecker(bestNameListNameOnly, answerList):
 
     
     print("---------------------------------------------")
-    print("Remaining names in answer list (not guessed/not guessed correctly): ", answerList)
+    print("Remaining names in answer list (not guessed/not guessed correctly):", answerList)
     print("---------------------------------------------")
     print("Correct Guess Score (correctcounter): " + str(correctcounter))
     print("Incorrect Guess Penalty (incorrectcounter): " + str(incorrectcounter))
-    print("Leftover Penalty (leftovercounter): " + str(leftovercounter))
+    print("Leftover Penalty (leftovercounter, if answer list > result list): " + str(leftovercounter))
     print("Accuracy of Results Against Answer (correct/(correct+incorrect+leftover): " + str(correctcounter/(correctcounter+incorrectcounter+leftovercounter)))
 
 
@@ -261,7 +263,7 @@ if __name__ == "__main__":
     for n in names:
         for index in range(0, len(AtomicCards_data["data"][n])):
             #print("Looking at: ", n, "| 'Side' number:", index+1)
-            print("Looking at: ", n.encode("utf-8"), "| 'Side' number:", index+1)
+            print("Looking at: ", helper.replace_bad_characters(n), "| 'Side' number:", index+1)
             #print("-Storing", AtomicCards_data["data"][n][index]["text"], "into non_names...")
             if "text" in AtomicCards_data["data"][n][index]:
                 non_names.append(json.dumps(AtomicCards_data["data"][n][index]["text"]))
