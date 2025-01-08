@@ -260,7 +260,8 @@ if __name__ == "__main__":
     
     for n in names:
         for index in range(0, len(AtomicCards_data["data"][n])):
-            print("Looking at: ", n, "| 'Side' number:", index+1)
+            #print("Looking at: ", n, "| 'Side' number:", index+1)
+            print("Looking at: ", n.encode("utf-8"), "| 'Side' number:", index+1)
             #print("-Storing", AtomicCards_data["data"][n][index]["text"], "into non_names...")
             if "text" in AtomicCards_data["data"][n][index]:
                 non_names.append(json.dumps(AtomicCards_data["data"][n][index]["text"]))
@@ -442,7 +443,7 @@ if __name__ == "__main__":
                 countdowncounter = countdowncounter + 1
             print("countdowncounter: " + str(countdowncounter))
             print(path3 + ": '" + str(imageToStrStr) + "'\n" + str(autocorrectOutput))
-            if countdowncounter >= 4:
+            if countdowncounter >= 3:
                 print("~Skipping rest of rotations~")
                 break
             i = i + 1
