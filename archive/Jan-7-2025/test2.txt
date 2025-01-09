@@ -1,0 +1,3 @@
+Encoding below:
+b'\xea\x9e\x89'
+Then after decoding:

@@ -2465,3 +2465,5 @@ textdetector/box_images/box99_9.jpg
 textdetector/box_images/box99_cropped.jpg
 textdetector/AtomicCards-old.json
 textdetector/AtomicCards-new.json
+/textdetector/box_images_archive
+/textdetector/box_images
