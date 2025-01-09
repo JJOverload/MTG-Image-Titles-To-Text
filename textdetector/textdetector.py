@@ -17,7 +17,7 @@ from collections import Counter
 import json
 # For Timer
 import datetime
-# For replacing characters
+# For replacing special characters that can cause issues
 from module import helper
 
 # Recording start time for timer
@@ -281,11 +281,10 @@ if __name__ == "__main__":
     # Open a video file or an image file or a camera stream
     #cap = cv.VideoCapture(args.input if args.input else 0)
     #cap = cv.VideoCapture(args.input)
-    #cap = cv.imread(args.input)
-    cap = cv.imread(args.input, cv.IMREAD_GRAYSCALE)
+    cap = cv.imread(args.input)
+    #cap = cv.imread(args.input, cv.IMREAD_GRAYSCALE)
 
-    thresh, cap = cv.threshold(cap, 127, 255, cv.THRESH_BINARY) #thresh is a dummy value
-    cap = cv.merge((cap,cap,cap))
+    
 
     print("-----Opening Atomic Cards JSON------")
     names = []
@@ -448,7 +447,16 @@ if __name__ == "__main__":
         #saving variations of frames in rotations
         counter2 = 0
         rotatelist = [4,3,2,1,0,-1,-2,-3,-4]
-        masked3_copy = Image.open(path2)
+        
+        # Grayscale coding here
+        masked3_initial_grayscale = cv.imread(path2, cv.IMREAD_GRAYSCALE)
+        thresh, masked3_initial_grayscale = cv.threshold(masked3_initial_grayscale, 127, 255, cv.THRESH_BINARY) #thresh is a dummy value
+        masked3_inital_grayscale = cv.merge((masked3_initial_grayscale, masked3_initial_grayscale, masked3_initial_grayscale))
+        path2grayscale = ".\\box_images\\box"+str(counter)+"_"+"grayscale"+".jpg"
+        cv.imwrite(path2grayscale, masked3_initial_grayscale)
+
+        # Rotational coding here
+        masked3_copy = Image.open(path2grayscale)
         masked3_rotated = None
         maxSimilarity = 0.0
         bestOutput = mtg_autocorrect("", V, name_freq_dict, probs)
@@ -459,6 +467,7 @@ if __name__ == "__main__":
             degree = rotatelist[i]
             counter2 += 1
             masked3_rotated = masked3_copy.rotate(degree)
+
             path3 = ".\\box_images\\box"+str(counter)+"_"+str(counter2)+".jpg"
             masked3_rotated.save(path3)
             imageToStrStr = pytesseract.image_to_string(masked3_rotated)
@@ -504,7 +513,7 @@ if __name__ == "__main__":
     # obj: xmin, ymin, xmax, ymax
     #merging frame2 and mask2 to make masked2 altered frame
     masked2 = cv.bitwise_and(frame2, frame2, mask=mask2)
-    masked2copy = masked2
+    masked2copy = cv.bitwise_and(frame2, frame2, mask=mask2)
     #TODO: edit masked2copy if "--showtext" argument is specified/true
     if (showthetext == True):
         for n, s, box in bestNameList:
