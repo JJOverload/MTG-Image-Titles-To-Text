@@ -101,6 +101,7 @@ Sample CMD (Windows) commands:
 
 `python textdetector.py --input tegwyll-nonlands-Copy-censored.jpg --width 3072 --height 2656 --answername tegwyll-nonland-decklist-answer.txt > output_tegwyll.txt`
 
+`textdetector.py --input CardPileSample1.jpg --width 3072 --height 4096 --showtext --answername CardPileSample1-list-answer.txt`
 
 NOTE: Try to ensure that the image's height is not too large relative to width, since certain dimensions can cause the image to be rotated sideways. (As seen when using: `python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064`. Check the output.png image at the end.) ***Fixed***
 

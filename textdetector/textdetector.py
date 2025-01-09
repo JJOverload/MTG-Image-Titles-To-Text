@@ -26,7 +26,7 @@ starttime = datetime.datetime.now()
 # Grabbing arguments from command line when executing command
 parser = argparse.ArgumentParser(description='Use this script to run text detection deep learning networks using OpenCV.')
 # Input argument
-parser.add_argument('--input', help='Path to input image or video file. Skip this argument to capture frames from a camera.')
+parser.add_argument('--input', help='Path to input image or video file.')
 # Model argument
 parser.add_argument('--model', default="frozen_east_text_detection.pb",
                     help='Path to a binary .pb file of model contains trained weights.'
@@ -51,8 +51,10 @@ parser.add_argument('--nms',type=float, default=0.4,
 parser.add_argument('--device', default="cpu", help="Device to inference on")
 
 # Location/name of answer .txt file
-parser.add_argument('--answername', type=str, default="", help="Location/name of answer .txt file")
+parser.add_argument('--answername', type=str, default="", help="Location/name of answer .txt file.")
 
+# Indicator of whether or not we show text onto Rec2.jpg
+parser.add_argument('--showtext', action='store_true', help="Indicator of whether or not we show text onto Rec2.jpg image.")
 
 args = parser.parse_args()
 
@@ -129,7 +131,32 @@ def calc_sim(text, obj):
     y_dist = min(abs(text_ymin-obj_ymin), abs(text_ymin-obj_ymax), abs(text_ymax-obj_ymin), abs(text_ymax-obj_ymax))
 
     dist = x_dist + y_dist
+
     return(dist)
+
+def compare_vertices_with_box_shows_overlap(vertices, boxtemp):
+    index = 0
+    while (index < len(vertices)):
+        x1, y1 = vertices[index] #x1, y1 is a temp vertice we are looking at right now from vertices
+        # text: xmin, ymin, xmax, ymax
+        # obj: xmin, ymin, xmax, ymax
+        if (x1 >= boxtemp[0]) and (x1 <= boxtemp[2]) and (y1 >= boxtemp[1]) and (y1 <= boxtemp[3]):
+            return(True)
+        index = index + 1
+    return(False)
+
+def is_overlap(text, obj):
+    text_xmin, text_ymin, text_xmax, text_ymax = text
+    obj_xmin, obj_ymin, obj_xmax, obj_ymax = obj
+
+    textvertices = [(text_xmin, text_ymin), (text_xmax, text_ymin), (text_xmin, text_ymax), (text_xmax, text_ymax)]
+    objvertices = [(obj_xmin, obj_ymin), (obj_xmax, obj_ymin), (obj_xmin, obj_ymax), (obj_xmax, obj_ymax)]
+
+    if (compare_vertices_with_box_shows_overlap(textvertices, obj) or compare_vertices_with_box_shows_overlap(objvertices, text)):
+        #if compare is true (you found a vertex that is within the bbox of the other list of tuples)
+        return(True)
+    return(False)
+
 
 def merge_algo(bboxes): #bboxes is a list of bounding boxes data
     for j in bboxes:
@@ -137,7 +164,7 @@ def merge_algo(bboxes): #bboxes is a list of bounding boxes data
             if j == k: #continue on if we are comparing a box with itself
                 continue
             # Find out if these two bboxes are within distance limit
-            if calc_sim(j, k) < dist_limit:
+            if (calc_sim(j, k) < dist_limit) or (is_overlap(j, k) == True):
                 # Create a new box
                 new_box = merge_boxes(j, k)
                 bboxes.append(new_box)
@@ -222,11 +249,16 @@ if __name__ == "__main__":
     inpHeight = args.height
     model = args.model
     answerfilename = args.answername
+    showthetext = args.showtext
 
     # Creating buffer/container for bounding boxes' vertices
     bbox = []
     # Setting distance limit for bounding box merging
     dist_limit = 40
+    # distance for expanding bounding box.
+    # Combined values of expanding distances should not exceed dist_limit. dist_limit/2 can likely cause decrease in accuracy
+    expand_dist = int(dist_limit/10)
+    #expand_dist = 0
 
     # Load network
     net = cv.dnn.readNet(model)
@@ -345,10 +377,6 @@ if __name__ == "__main__":
             hlist.append(int(vertices[j][1]))
             print("Appended:", (int(vertices[j][0]), int(vertices[j][1]) ) )
         
-        # distance for expanding bounding box.
-        # Combined values of expanding distances should not exceed dist_limit. dist_limit/2 can likely cause decrease in accuracy
-        #expand_dist = int(dist_limit/10)
-        expand_dist = 0  
 
         print("-----Initial vertices for a box completed-----")
         # text: ymin, xmin, ymax, xmax
@@ -402,8 +430,6 @@ if __name__ == "__main__":
         cv.rectangle(mask3, (b[0], b[1]), (b[2], b[3]), 255, -1)
         masked3 = cv.bitwise_and(frame2, frame2, mask=mask3)
 
-        #add "putText" code around here
-
         # Likely would need to modify this line below if using Linux. Use this line to help with debugging. Would need to create box_images directory first.
         path = ".\\box_images\\box"+str(counter)+".jpg"
         cv.imwrite(path, masked3)
@@ -417,7 +443,7 @@ if __name__ == "__main__":
 
         #saving variations of frames in rotations
         counter2 = 0
-        rotatelist = [6,5,4,3,2,1,0,-1,-2,-3,-4,-5,-6]
+        rotatelist = [4,3,2,1,0,-1,-2,-3,-4]
         masked3_copy = Image.open(path2)
         masked3_rotated = None
         maxSimilarity = 0.0
@@ -455,7 +481,7 @@ if __name__ == "__main__":
         if (bestOutput.iat[0,0] in non_names) or (bestOutput.iat[0,2] <= 0.40):
             print("-----Likely Noise/Non-name - Skipped-----")
         else: #If name is exising or is not "noise" due to low similarity
-            bestNameList.append((bestOutput.iat[0,0], bestOutput.iat[0,2]))
+            bestNameList.append((bestOutput.iat[0,0], bestOutput.iat[0,2], b))
             print("---------------------------------------------")
         print("")
 
@@ -466,7 +492,7 @@ if __name__ == "__main__":
     print("-----Outputing Best Name List-----")
     print(bestNameList)
     print("Length of bestNameList: " + str(len(bestNameList)))
-    for n, s in bestNameList:
+    for n, s, box in bestNameList:
         print(n)
         bestNameListNameOnly.append(n)
 
@@ -474,23 +500,33 @@ if __name__ == "__main__":
     # obj: xmin, ymin, xmax, ymax
     #merging frame2 and mask2 to make masked2 altered frame
     masked2 = cv.bitwise_and(frame2, frame2, mask=mask2)
+    masked2copy = masked2
+    #TODO: edit masked2copy if "--showtext" argument is specified/true
+    if (showthetext == True):
+        for n, s, box in bestNameList:
+            #cv.putText(image, 'OpenCV', org, font, fontScale, color, thickness, cv2.LINE_AA)
+            cv.putText(masked2copy, n, (box[0], box[1]), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv.LINE_AA)
+
+    #execute AccuracyChecker, if argument is present in run command
+    if (answerfilename!=""):
+        answerList = convertTxtFileAnswerToList(answerfilename)
+        runAccuracyChecker(bestNameListNameOnly, answerList)
+
     ####
     # Name of window
     #kWinName = "MTG-Image-Titles-To-Text"
     # Spawn window
     #cv.namedWindow(kWinName, cv.WINDOW_NORMAL)
-    
+
     # Display the frame
     #cv.imshow(kWinName,frame)
     ####
     cv.imwrite("output.png", frame)
     cv.imwrite("Rec.jpg", masked)
     cv.imwrite("Rec2.jpg", masked2)
+    cv.imwrite("Rec3.jpg", masked2copy)
 
-    #execute AccuracyChecker, if argument is present in run command
-    if (answerfilename!=""):
-        answerList = convertTxtFileAnswerToList(answerfilename)
-        runAccuracyChecker(bestNameListNameOnly, answerList)
+    
     
     #Recording endtime and outputing elapsed time
     endtime = datetime.datetime.now()
