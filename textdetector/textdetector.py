@@ -281,7 +281,11 @@ if __name__ == "__main__":
     # Open a video file or an image file or a camera stream
     #cap = cv.VideoCapture(args.input if args.input else 0)
     #cap = cv.VideoCapture(args.input)
-    cap = cv.imread(args.input)
+    #cap = cv.imread(args.input)
+    cap = cv.imread(args.input, cv.IMREAD_GRAYSCALE)
+
+    thresh, cap = cv.threshold(cap, 127, 255, cv.THRESH_BINARY) #thresh is a dummy value
+    cap = cv.merge((cap,cap,cap))
 
     print("-----Opening Atomic Cards JSON------")
     names = []
