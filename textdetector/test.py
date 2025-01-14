@@ -55,9 +55,34 @@ parser.add_argument('--showtext', action='store_true', help="Indicator of whethe
 
 args = parser.parse_args()
 
+def find_good_thresh(cap):
+    rows, cols = cap.shape
+    string = ""
+    lowest = 500
+    highest = -1
+    for y in range(0, rows):
+        for x in range(0, cols):
+            if cap[y][x] > highest:
+                highest = cap[y][x]
+            if cap[y][x] < lowest:
+                lowest = cap[y][x]
+
+    print("Lowest: " + str(lowest))
+    print("Highest: " + str(highest))
+    print("(Lowest+Highest)/2: " + str(int((lowest+highest)/2)))
+
+    return(int((lowest+highest)/2))
 
 cap = cv.imread(args.input, cv.IMREAD_GRAYSCALE)
-thresh, cap = cv.threshold(cap, 127, 255, cv.THRESH_BINARY) #thresh is a dummy value
+
+print(cap)
+print("------------------------")
+print(cap.shape)
+print(find_good_thresh(cap))
+
+
+#thresh, cap = cv.threshold(cap, find_good_thresh(cap), 255, cv.THRESH_BINARY) #thresh is a dummy value
+thresh, cap = cv.threshold(cap, find_good_thresh(cap), 255, cv.THRESH_BINARY) #thresh is a dummy value
 cap = cv.merge((cap,cap,cap)) 
 
 cv.imwrite("test-output.jpg", cap)
