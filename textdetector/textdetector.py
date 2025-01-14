@@ -240,6 +240,24 @@ def runAccuracyChecker(bestNameListNameOnly, answerList):
     print("Leftover Penalty (leftovercounter, if answer list > result list): " + str(leftovercounter))
     print("Accuracy of Results Against Answer (correct/(correct+incorrect+leftover): " + str(correctcounter/(correctcounter+incorrectcounter+leftovercounter)))
 
+def find_good_thresh(cap):
+    rows, cols = cap.shape
+    string = ""
+    lowest = 500
+    highest = -1
+    for y in range(0, rows):
+        for x in range(0, cols):
+            if cap[y][x] > highest:
+                highest = cap[y][x]
+            if cap[y][x] < lowest:
+                lowest = cap[y][x]
+    
+    int_result = int((int(lowest)+int(highest))/2)
+    print("Lowest: " + str(lowest))
+    print("Highest: " + str(highest))
+    print("(Lowest+Highest)/2: " + str(int_result))
+
+    return(int_result)
 
 if __name__ == "__main__":
     # Read and store arguments
@@ -420,6 +438,7 @@ if __name__ == "__main__":
     bestNameList = [] #for best name list and similarity values
     bestNameListNameOnly = []
     counter = 0
+    kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]]) 
     for b in bbox:
         counter += 1
         print(counter, b)
@@ -446,17 +465,24 @@ if __name__ == "__main__":
 
         #saving variations of frames in rotations
         counter2 = 0
-        rotatelist = [4,3,2,1,0,-1,-2,-3,-4]
+        rotatelist = [6,5,4,3,2,1,0,-1,-2,-3,-4,-5,-6]
         
-        # Grayscale coding here
+        # Grayscale/BnW coding and then sharpen here
         masked3_initial_grayscale = cv.imread(path2, cv.IMREAD_GRAYSCALE)
-        thresh, masked3_initial_grayscale = cv.threshold(masked3_initial_grayscale, 127, 255, cv.THRESH_BINARY) #thresh is a dummy value
-        masked3_inital_grayscale = cv.merge((masked3_initial_grayscale, masked3_initial_grayscale, masked3_initial_grayscale))
-        path2grayscale = ".\\box_images\\box"+str(counter)+"_"+"grayscale"+".jpg"
-        cv.imwrite(path2grayscale, masked3_initial_grayscale)
+        thresh, masked3_black_and_white = cv.threshold(masked3_initial_grayscale, find_good_thresh(masked3_initial_grayscale), 255, cv.THRESH_BINARY) #thresh is a dummy value
+        masked3_black_and_white = cv.merge((masked3_black_and_white, masked3_black_and_white, masked3_black_and_white))
+        
+        # Create the sharpening kernel (already initialized)
+        #kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]]) 
+        # Sharpen the image 
+        sharpened_black_and_white = cv.filter2D(masked3_black_and_white, -1, kernel) 
+
+        path_black_white = ".\\box_images\\box"+str(counter)+"_"+"sharpen-BnW"+".jpg"
+        #cv.imwrite(path_black_white, masked3_black_and_white)
+        cv.imwrite(path_black_white, sharpened_black_and_white)
 
         # Rotational coding here
-        masked3_copy = Image.open(path2grayscale)
+        masked3_copy = Image.open(path_black_white)
         masked3_rotated = None
         maxSimilarity = 0.0
         bestOutput = mtg_autocorrect("", V, name_freq_dict, probs)
