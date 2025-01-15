@@ -85,4 +85,19 @@ print(find_good_thresh(cap))
 thresh, cap = cv.threshold(cap, find_good_thresh(cap), 255, cv.THRESH_BINARY) #thresh is a dummy value
 cap = cv.merge((cap,cap,cap)) 
 
-cv.imwrite("test-output.jpg", cap)
+#cv.imwrite("test-output.jpg", cap)
+
+
+string = "Breakneck Rider // Neck Breaker"
+string = "B.F.M. (Big Furry Monster)"
+print(string.find(" // "))
+print(string[:string.find(" // ")] + "|" + string[string.find(" // ")+4:])
+
+print(string[:string.find(" // ")])
+print(string[string.find(" // ")+4:])
+'''
+for x in ["Breakneck Rider // Neck Breakers", "Arsonist Goblin", "Brazen // Borrower"]:
+    print("Breakneck Rider" in x)
+
+'''
+print(min(['a','b','c'] + ['d','e','f']))
