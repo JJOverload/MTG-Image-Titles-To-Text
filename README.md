@@ -107,6 +107,10 @@ Sample CMD (Windows) commands:
 
 `python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064 --showtext --answername tegwyll-nonland-decklist-answer-2.txt > output_tegwyll-8(test-refractor-and-double-names).txt`
 
+`python textdetector.py --input FyndhornElves1.jpg --width 3072 --height 4064 --showtext`
+
+`python textdetector.py --input FyndhornElves2-toploader.jpg --width 3072 --height 4064 --showtext`
+
 NOTE: Try to ensure that the image's height is not too large relative to width, since certain dimensions can cause the image to be rotated sideways. (As seen when using: `python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064`. Check the output.png image at the end.) ***Fixed***
 
 NOTE: textdetector code solely tested in Windows so far. If having issues with running in Linux, try changing the "path" variable assignment values (in the code) so that it uses forward slashes (/) instead of backslashes (\\) prevalent in Windows.
@@ -146,10 +150,11 @@ Good link if one wants to rely on non-online/website link for OCR: https://www.t
 C++/Python article that references EAST (An Efficient and Accruate Scene Text Detector) paper:
 https://learnopencv.com/deep-learning-based-text-detection-using-opencv-c-python/
 
-- Example code from the above link:
-- https://github.com/spmallick/learnopencv/blob/master/TextDetectionEAST/textDetection.py
+- Example code from the above link: 
+https://github.com/spmallick/learnopencv/blob/master/TextDetectionEAST/textDetection.py
 
-StackOverflow on how to install multiple packages with one command: https://stackoverflow.com/questions/9956741/how-to-install-multiple-python-packages-at-once-using-pip
+StackOverflow on how to install multiple packages with one command: 
+https://stackoverflow.com/questions/9956741/how-to-install-multiple-python-packages-at-once-using-pip
 
 (Paper) A good read. Skimmed through the progress made so far by Quentin Fortier. Should be able to learn some stuff from here:
 https://fortierq.github.io/mtgscan-ocr-azure-flask-celery-socketio/
@@ -178,8 +183,8 @@ https://pyimagesearch.com/2022/01/31/correcting-text-orientation-with-tesseract-
 How to rotate an image using Python?:
 https://www.geeksforgeeks.org/how-to-rotate-an-image-using-python/
 
-Image Processing in Python with Pillow (Cropping Section)
+Image Processing in Python with Pillow (Cropping Section):
 https://auth0.com/blog/image-processing-in-python-with-pillow/
 
-
-
+One of the resources used for Autocorrection code/algorithm:
+https://predictivehacks.com/how-to-build-an-autocorrect-in-python/
