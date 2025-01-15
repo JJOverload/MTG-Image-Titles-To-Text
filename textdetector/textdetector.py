@@ -59,7 +59,55 @@ parser.add_argument('--showtext', action='store_true', help="Indicator of whethe
 args = parser.parse_args()
 
 
-############ Utility functions ############
+def convertMTGJSONNamesToVocabAndNames(jsonName):
+    names = []
+    non_names = [] # Second list of names reserved for things like type info and text of cards 
+    unaltered_double_names = []
+    separated_double_names = []
+    double_temp_list = []
+    V = {}
+    # AtomicCards_data is a dictionary of dictionaries of MTG card data...
+    with open(jsonName, 'r', encoding='utf-8') as AtomicCards_file:
+        AtomicCards_data = json.load(AtomicCards_file)
+    # creating list/set of names
+    names = list(AtomicCards_data["data"].keys()) # First list of names
+    #for each "name" in names
+    for n in names:
+        if len(AtomicCards_data["data"][n]) > 1:
+            print("Initially looking at: ", helper.replace_bad_characters(n), "| 'Side' total:", len(AtomicCards_data["data"][n]))
+            unaltered_double_names.append(n)
+            double_temp_list = split_double_card_names(n)
+            for dn in double_temp_list:
+                separated_double_names.append(dn)
+                print("Appending dn to double_names:", helper.replace_bad_characters(dn))
+        for index in range(0, len(AtomicCards_data["data"][n])):
+            #print("Looking at: ", n, "| 'Side' number:", index+1)
+            print("Looking at: ", helper.replace_bad_characters(n), "| 'Side' number:", index+1)
+            #print("-Storing", AtomicCards_data["data"][n][index]["text"], "into non_names...")
+            if "text" in AtomicCards_data["data"][n][index]:
+                non_names.append(json.dumps(AtomicCards_data["data"][n][index]["text"]))
+            if "type" in AtomicCards_data["data"][n][index]:
+                non_names.append(json.dumps(AtomicCards_data["data"][n][index]["type"]))
+
+    # Non-names are also "vocab" we are using. Counting them as "names" for simplicity.
+    print()
+    print(separated_double_names)
+    print()
+    for udn in unaltered_double_names:
+        names.remove(udn)
+    names = separated_double_names + names + non_names
+    V = set(names) # V for vocab
+
+    #for vocab in V:
+    #    if vocab == "Brazen Borrower":
+    #        print("FOUND IT ---------------------------<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<<")
+    return(V, names, non_names, separated_double_names, unaltered_double_names)
+
+def split_double_card_names(n):
+    if n.find(" // ") != -1:
+        return([n[:n.find(" // ")], n[n.find(" // ")+4:]])
+    return([n])
+
 def decode(scores, geometry, scoreThresh):
     detections = []
     confidences = []
@@ -181,15 +229,24 @@ def mtg_autocorrect(input_word, V, name_freq_dict, probs):
     #input_word = input_word.lower()
 
     # qval in similarities needs to be 2, meaning input_word needs to be 2 characters or more.
-    if len(input_word) == 1:
+    if len(input_word) == 2:
         input_word = input_word + " "
-    elif len(input_word) == 0:
+    if len(input_word) == 1:
         input_word = input_word + "  "
-    similarities = [1-(textdistance.Jaccard(qval=2).distance(v,input_word)) for v in name_freq_dict.keys()]
+    elif len(input_word) == 0:
+        input_word = input_word + "   "
+    similarities = [1-(textdistance.Jaccard(qval=3).distance(v,input_word)) for v in name_freq_dict.keys()]
+    #similarities = [(textdistance.Sorensen(qval=2).similarity(v,input_word)) for v in name_freq_dict.keys()]
     df = pd.DataFrame.from_dict(probs, orient='index').reset_index()
     df = df.rename(columns={'index':'Name', 0:'Prob'})
     df['Similarity'] = similarities
     output = df.sort_values(['Similarity', 'Prob'], ascending=False).head(1) #.iat[0,0]
+
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    tempoutput = df.sort_values(['Similarity', 'Prob'], ascending=False).head(20) #.iat[0,0]
+    print(tempoutput)
+    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    
     #print("output:\n", output)
     #if output.iat[0,2] <= 0.1:
     #    return("")
@@ -203,7 +260,7 @@ def convertTxtFileAnswerToList(aname):
     f = open(aname, "r")
     for x in f: #x is a line of the text file
         outputlist.append(x.strip())
-        print("During conversion -> Added to outputlist:|" + str(x.strip()) + "|")
+        print("During conversion from answer file -> list:|" + str(x.strip()) + "|")
     f.close()
     return(outputlist)
 
@@ -225,11 +282,11 @@ def runAccuracyChecker(bestNameListNameOnly, answerList):
     for nameofb in bestNameListNameOnly:
         if nameofb in answerList:
             correctcounter = correctcounter + 1
-            print("nameofb: " + str(nameofb) + " (Correct)")
+            print("(Correct): " + str(nameofb))
             answerList.remove(nameofb)
         else: #incorrect
             incorrectcounter = incorrectcounter + 1
-            print("nameofb: " + str(nameofb) + " ***(NOT Correct)***")
+            print("***(NOT Correct)***: " + str(nameofb))
 
     
     print("---------------------------------------------")
@@ -305,27 +362,7 @@ if __name__ == "__main__":
     
 
     print("-----Opening Atomic Cards JSON------")
-    names = []
-    non_names = [] # Second list of names
-    # AtomicCards_data is a dictionary of dictionaries of MTG card data...
-    with open('AtomicCards.json', 'r', encoding='utf-8') as AtomicCards_file:
-        AtomicCards_data = json.load(AtomicCards_file)
-    # creating list/set of names
-    names = list(AtomicCards_data["data"].keys()) # First list of names
-    
-    for n in names:
-        for index in range(0, len(AtomicCards_data["data"][n])):
-            #print("Looking at: ", n, "| 'Side' number:", index+1)
-            print("Looking at: ", helper.replace_bad_characters(n), "| 'Side' number:", index+1)
-            #print("-Storing", AtomicCards_data["data"][n][index]["text"], "into non_names...")
-            if "text" in AtomicCards_data["data"][n][index]:
-                non_names.append(json.dumps(AtomicCards_data["data"][n][index]["text"]))
-            if "type" in AtomicCards_data["data"][n][index]:
-                non_names.append(json.dumps(AtomicCards_data["data"][n][index]["type"]))
-
-    # Non-names are also "vocab" we are using. Counting them as "names" for simplicity.
-    names = names + non_names
-    V = set(names)
+    V, names, non_names, separated_double_names, unaltered_double_names = convertMTGJSONNamesToVocabAndNames("AtomicCards.json")
     
     
     #Counter of name frequency
@@ -429,19 +466,47 @@ if __name__ == "__main__":
     for b in bbox:
         print(b)
 
-    need_to_merge = True
     #Merge the boxes
+    need_to_merge = True
     while need_to_merge:
         need_to_merge, bbox = merge_algo(bbox)
 
-    print("-----Printing Out Final \"bboxes\"-----:")
+    print("-----Initializing for Final \"bboxes\"-----:")
+    #initialization for optimization
     bestNameList = [] #for best name list and similarity values
     bestNameListNameOnly = []
     counter = 0
-    kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]]) 
+    mask3 = None
+    masked3 = None
+    path = ""
+    image_to_be_cropped = None
+    cropped_image = None
+    counter2 = 0
+    rotatelist = []
+    masked3_initial_grayscale = None
+    thresh = None
+    masked3_black_and_white = None
+    sharpened_black_and_white = None
+    kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]]) #don't change to None
+    path_black_white = ""
+
+    masked3_copy = None
+    masked3_rotated = None
+    
+    degree = 0
+    masked3_rotated = None
+    imageToStrStr = None
+    autocorrectOutput = None
+    tempSimilarity = 0.0
+    maxSimilarity = 0.0
+    startcountdown = False
+    bestOutput = None
+    countdowncounter = 0
+    
+    print("-----Printing Out Final \"bboxes\"-----:")
     for b in bbox:
         counter += 1
-        print(counter, b)
+        print("->", counter, b)
         # text: xmin, ymin, xmax, ymax
         # obj: xmin, ymin, xmax, ymax
         #Making rectangles for mask2, which will be be used to ultimately generate "Rec2.jpg"
@@ -525,9 +590,6 @@ if __name__ == "__main__":
         print("")
 
 
-
-        
-
     print("-----Outputing Best Name List-----")
     print(bestNameList)
     print("Length of bestNameList: " + str(len(bestNameList)))
@@ -535,8 +597,6 @@ if __name__ == "__main__":
         print(n)
         bestNameListNameOnly.append(n)
 
-    # text: xmin, ymin, xmax, ymax
-    # obj: xmin, ymin, xmax, ymax
     #merging frame2 and mask2 to make masked2 altered frame
     masked2 = cv.bitwise_and(frame2, frame2, mask=mask2)
     masked2copy = cv.bitwise_and(frame2, frame2, mask=mask2)
@@ -551,26 +611,29 @@ if __name__ == "__main__":
         answerList = convertTxtFileAnswerToList(answerfilename)
         runAccuracyChecker(bestNameListNameOnly, answerList)
 
-    ####
-    # Name of window
-    #kWinName = "MTG-Image-Titles-To-Text"
-    # Spawn window
-    #cv.namedWindow(kWinName, cv.WINDOW_NORMAL)
 
-    # Display the frame
-    #cv.imshow(kWinName,frame)
-    ####
     cv.imwrite("output.png", frame)
     cv.imwrite("Rec.jpg", masked)
     cv.imwrite("Rec2.jpg", masked2)
     cv.imwrite("Rec3.jpg", masked2copy)
-
     
     
     #Recording endtime and outputing elapsed time
     endtime = datetime.datetime.now()
     elapsedtime = endtime - starttime
     print("Elapsed Time:", elapsedtime)
+
+    '''
+    ####
+    # Name of window
+    kWinName = "TCG MultiScan"
+    # Spawn window
+    cv.namedWindow(kWinName, cv.WINDOW_NORMAL)
+    # Display the frame
+    cv.imshow(kWinName, masked2copy)
+    cv.waitKey()
+    ####
+    '''
 
 
 
