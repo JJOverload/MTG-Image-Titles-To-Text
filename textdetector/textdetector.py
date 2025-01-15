@@ -90,9 +90,9 @@ def convertMTGJSONNamesToVocabAndNames(jsonName):
                 non_names.append(json.dumps(AtomicCards_data["data"][n][index]["type"]))
 
     # Non-names are also "vocab" we are using. Counting them as "names" for simplicity.
-    print()
-    print(separated_double_names)
-    print()
+    #print()
+    #print(separated_double_names)
+    #print()
     for udn in unaltered_double_names:
         names.remove(udn)
     names = separated_double_names + names + non_names
@@ -242,10 +242,10 @@ def mtg_autocorrect(input_word, V, name_freq_dict, probs):
     df['Similarity'] = similarities
     output = df.sort_values(['Similarity', 'Prob'], ascending=False).head(1) #.iat[0,0]
 
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
-    tempoutput = df.sort_values(['Similarity', 'Prob'], ascending=False).head(20) #.iat[0,0]
-    print(tempoutput)
-    print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    #print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
+    #tempoutput = df.sort_values(['Similarity', 'Prob'], ascending=False).head(20) #.iat[0,0]
+    #print(tempoutput)
+    #print("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~")
     
     #print("output:\n", output)
     #if output.iat[0,2] <= 0.1:
@@ -408,9 +408,11 @@ if __name__ == "__main__":
     # have buffers for getting coordinates for rectangles
     startCorner = (0, 0)
     endCorner = (0, 0)
-    #creating mask layer to work on later...
+    #creating mask layer
     mask = np.zeros(frame.shape[:2], dtype="uint8")
+    #masked = None
     mask2 = np.zeros(frame.shape[:2], dtype="uint8")
+
     #creating backup frame
     frame2 = frame.copy()
 
@@ -462,16 +464,17 @@ if __name__ == "__main__":
     cv.putText(frame, label, (0, 15), cv.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 255))
     
 
-    print("-----Printing Out Inital \"bboxes\"-----:")
+    print("-----Printing Out Initial \"bboxes\"-----:")
     for b in bbox:
         print(b)
 
+    print("-----Merging Initial \"bboxes\"-----:")
     #Merge the boxes
     need_to_merge = True
     while need_to_merge:
         need_to_merge, bbox = merge_algo(bbox)
 
-    print("-----Initializing for Final \"bboxes\"-----:")
+    print("-----Merging Done. Initializing Variables-----:")
     #initialization for optimization
     bestNameList = [] #for best name list and similarity values
     bestNameListNameOnly = []
@@ -490,9 +493,10 @@ if __name__ == "__main__":
     kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]]) #don't change to None
     path_black_white = ""
 
+    #Initialization of variables
     masked3_copy = None
     masked3_rotated = None
-    
+    #Initialization of variables
     degree = 0
     masked3_rotated = None
     imageToStrStr = None
@@ -501,9 +505,10 @@ if __name__ == "__main__":
     maxSimilarity = 0.0
     startcountdown = False
     bestOutput = None
+    initial_bestOutput = mtg_autocorrect("", V, name_freq_dict, probs)
     countdowncounter = 0
     
-    print("-----Printing Out Final \"bboxes\"-----:")
+    print("-----Iterating Through Merged \"bboxes\"-----:")
     for b in bbox:
         counter += 1
         print("->", counter, b)
@@ -542,15 +547,20 @@ if __name__ == "__main__":
         # Sharpen the image 
         sharpened_black_and_white = cv.filter2D(masked3_black_and_white, -1, kernel) 
 
+        #temp test
+        #masked3_initial = cv.imread(path2)
+        #sharpened_black_and_white = cv.filter2D(masked3_initial, -1, kernel) 
+
         path_black_white = ".\\box_images\\box"+str(counter)+"_"+"sharpen-BnW"+".jpg"
         #cv.imwrite(path_black_white, masked3_black_and_white)
         cv.imwrite(path_black_white, sharpened_black_and_white)
 
         # Rotational coding here
+        # Assigning default variable values here
         masked3_copy = Image.open(path_black_white)
         masked3_rotated = None
         maxSimilarity = 0.0
-        bestOutput = mtg_autocorrect("", V, name_freq_dict, probs)
+        bestOutput = initial_bestOutput
         startcountdown = False
         countdowncounter = 0
         i = 0 #index for rotatelist
@@ -585,7 +595,7 @@ if __name__ == "__main__":
         if (bestOutput.iat[0,0] in non_names) or (bestOutput.iat[0,2] <= 0.40):
             print("-----Likely Noise/Non-name - Skipped-----")
         else: #If name is exising or is not "noise" due to low similarity
-            bestNameList.append((bestOutput.iat[0,0], bestOutput.iat[0,2], b))
+            bestNameList.append((bestOutput.iat[0,0], bestOutput.iat[0,2], b, counter))
             print("---------------------------------------------")
         print("")
 
@@ -593,7 +603,7 @@ if __name__ == "__main__":
     print("-----Outputing Best Name List-----")
     print(bestNameList)
     print("Length of bestNameList: " + str(len(bestNameList)))
-    for n, s, box in bestNameList:
+    for n, s, box, c in bestNameList:
         print(n)
         bestNameListNameOnly.append(n)
 
@@ -602,9 +612,9 @@ if __name__ == "__main__":
     masked2copy = cv.bitwise_and(frame2, frame2, mask=mask2)
     #TODO: edit masked2copy if "--showtext" argument is specified/true
     if (showthetext == True):
-        for n, s, box in bestNameList:
+        for n, s, box, c in bestNameList:
             #cv.putText(image, 'OpenCV', org, font, fontScale, color, thickness, cv2.LINE_AA)
-            cv.putText(masked2copy, n, (box[0], box[1]), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv.LINE_AA)
+            cv.putText(masked2copy, str(str(c)+": "+n), (box[0], box[1]), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv.LINE_AA)
 
     #execute AccuracyChecker, if argument is present in run command
     if (answerfilename!=""):
