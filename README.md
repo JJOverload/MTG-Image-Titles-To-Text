@@ -14,6 +14,12 @@ A personal project for a TCG card title scanner. The goal is to have a tool that
 
 Note: Did not use OSD since it could not handle rotations less than 90 degrees with it.
 
+Notes:
+
+- Currently works well with the more recent cards of MTG, where the text are black in color. This is optimal due to the way pytesseract appears to handle darker texts as opposed to white text.
+- Can still gather some names that are in white text, but cards that old can have a much older printing of rules/flavor text, which the json name list might not have on file. E.g. Try running the program with the Fyndhorn Elves pictures.
+    - As you might have also noticed, getting a picture of a card whose sides are not lining up perpendicular to the bottom of the image file (aka if the picture is not straight) can cause issues.
+
 ------------------------------------
 
 **Installation Instructions**
@@ -105,11 +111,11 @@ Sample CMD (Windows) commands:
 
 `python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064 --showtext --answername tegwyll-nonland-decklist-answer.txt > output_tegwyll.txt`
 
-`python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064 --showtext --answername tegwyll-nonland-decklist-answer-2.txt > output_tegwyll-8(test-refractor-and-double-names).txt`
+`python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064 --showtext --answername tegwyll-nonland-decklist-answer-2.txt > output_tegwyll-17(lookingForCounterspellWithLowerExpectations).txt`
 
-`python textdetector.py --input FyndhornElves1.jpg --width 3072 --height 4064 --showtext`
+`python textdetector.py --input FyndhornElves1.jpg --width 3072 --height 4064 --showtext --answername elf-answer-list.txt`
 
-`python textdetector.py --input FyndhornElves2-toploader.jpg --width 3072 --height 4064 --showtext`
+`python textdetector.py --input FyndhornElves2-toploader.jpg --width 3072 --height 4064 --showtext --answername elf-answer-list.txt`
 
 NOTE: Try to ensure that the image's height is not too large relative to width, since certain dimensions can cause the image to be rotated sideways. (As seen when using: `python textdetector.py --input tegwyll-nonlands.jpg --width 3072 --height 4064`. Check the output.png image at the end.) ***Fixed***
 
