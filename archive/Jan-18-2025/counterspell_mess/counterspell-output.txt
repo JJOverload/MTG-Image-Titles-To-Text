@@ -1,0 +1,73 @@
+-> 1 (174, 1360, 307, 1405)
+Lowest: 40
+Highest: 243
+(Lowest+Highest)/2: 141
+countdowncounter: 0
+.\box_images\box1_1.jpg: ''
+            Name      Prob  Similarity
+31565  "Instant"  0.036141         0.0
+---------------------------------------------
+countdowncounter: 0
+.\box_images\box1_2.jpg: ''
+            Name      Prob  Similarity
+31565  "Instant"  0.036141         0.0
+---------------------------------------------
+countdowncounter: 0
+.\box_images\box1_3.jpg: ''
+            Name      Prob  Similarity
+31565  "Instant"  0.036141         0.0
+---------------------------------------------
+countdowncounter: 0
+.\box_images\box1_4.jpg: ''
+            Name      Prob  Similarity
+31565  "Instant"  0.036141         0.0
+---------------------------------------------
+countdowncounter: 0
+.\box_images\box1_5.jpg: ''
+            Name      Prob  Similarity
+31565  "Instant"  0.036141         0.0
+---------------------------------------------
+countdowncounter: 0
+.\box_images\box1_6.jpg: ''
+            Name      Prob  Similarity
+31565  "Instant"  0.036141         0.0
+---------------------------------------------
+countdowncounter: 0
+.\box_images\box1_7.jpg: ''
+            Name      Prob  Similarity
+31565  "Instant"  0.036141         0.0
+---------------------------------------------
+countdowncounter: 0
+.\box_images\box1_8.jpg: ''
+            Name      Prob  Similarity
+31565  "Instant"  0.036141         0.0
+---------------------------------------------
+countdowncounter: 0
+.\box_images\box1_9.jpg: ''
+            Name      Prob  Similarity
+31565  "Instant"  0.036141         0.0
+---------------------------------------------
+countdowncounter: 0
+.\box_images\box1_10.jpg: ''
+            Name      Prob  Similarity
+31565  "Instant"  0.036141         0.0
+---------------------------------------------
+countdowncounter: 0
+.\box_images\box1_11.jpg: ''
+            Name      Prob  Similarity
+31565  "Instant"  0.036141         0.0
+---------------------------------------------
+countdowncounter: 0
+.\box_images\box1_12.jpg: ''
+            Name      Prob  Similarity
+31565  "Instant"  0.036141         0.0
+---------------------------------------------
+countdowncounter: 0
+.\box_images\box1_13.jpg: ''
+            Name      Prob  Similarity
+31565  "Instant"  0.036141         0.0
+---------------------------------------------
+Best Name:
+            Name      Prob  Similarity
+31565  "Instant"  0.036141         0.0
+-----Likely Noise/Non-name - Skipped-----

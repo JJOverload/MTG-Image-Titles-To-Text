@@ -365,7 +365,7 @@ if __name__ == "__main__":
     V, names, non_names, separated_double_names, unaltered_double_names = convertMTGJSONNamesToVocabAndNames("AtomicCards.json")
     
     
-    #Counter of name frequency
+    # Counter of name frequency
     name_freq_dict = {}
     name_freq_dict = Counter(names)
     #Relative Frequency of names
@@ -478,6 +478,7 @@ if __name__ == "__main__":
     #initialization for optimization
     bestNameList = [] #for best name list and similarity values
     bestNameListNameOnly = []
+    noiseList = []
     counter = 0
     mask3 = None
     masked3 = None
@@ -517,7 +518,7 @@ if __name__ == "__main__":
         #Making rectangles for mask2, which will be be used to ultimately generate "Rec2.jpg"
         cv.rectangle(mask2, (b[0], b[1]), (b[2], b[3]), 255, -1)
         
-        #Creating mask3 to create box image in "box_images" directory
+        # Creating mask3 to create box image in "box_images" directory
         mask3 = np.zeros(frame2.shape[:2], dtype="uint8")
         cv.rectangle(mask3, (b[0], b[1]), (b[2], b[3]), 255, -1)
         masked3 = cv.bitwise_and(frame2, frame2, mask=mask3)
@@ -526,38 +527,45 @@ if __name__ == "__main__":
         path = ".\\box_images\\box"+str(counter)+".jpg"
         cv.imwrite(path, masked3)
 
-        #The coordinates for the cropping box are (left, upper, right, lower)
+        # The coordinates for the cropping box are (left, upper, right, lower)
         image_to_be_cropped = Image.open(path)
         box = (b[0], b[1], b[2], b[3])
         cropped_image = image_to_be_cropped.crop(box)
         path2 = ".\\box_images\\box"+str(counter)+"_"+"cropped"+".jpg"
         cropped_image.save(path2)
 
-        #saving variations of frames in rotations
+        # Hackish way to make image have more "details" within pixels
+        # by making use of the innate compression settings of .imwrite method
+        image = cv.imread(path2)
+        temppath = ".\\box_images\\temp_image"+str(counter)+".jpg"
+        cv.imwrite(temppath , image)
+
+        # Saving variations of frames in rotations
         counter2 = 0
         rotatelist = [6,5,4,3,2,1,0,-1,-2,-3,-4,-5,-6]
         
         # Grayscale/BnW coding and then sharpen here
-        masked3_initial_grayscale = cv.imread(path2, cv.IMREAD_GRAYSCALE)
-        thresh, masked3_black_and_white = cv.threshold(masked3_initial_grayscale, find_good_thresh(masked3_initial_grayscale), 255, cv.THRESH_BINARY) #thresh is a dummy value
-        masked3_black_and_white = cv.merge((masked3_black_and_white, masked3_black_and_white, masked3_black_and_white))
+        #masked3_initial_grayscale = cv.imread(path2, cv.IMREAD_GRAYSCALE)
+        #thresh, masked3_black_and_white = cv.threshold(masked3_initial_grayscale, find_good_thresh(masked3_initial_grayscale), 255, cv.THRESH_BINARY) #thresh is a dummy value
+        #masked3_black_and_white = cv.merge((masked3_black_and_white, masked3_black_and_white, masked3_black_and_white))
         
         # Create the sharpening kernel (already initialized)
         #kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]]) 
         # Sharpen the image 
-        sharpened_black_and_white = cv.filter2D(masked3_black_and_white, -1, kernel) 
+        #sharpened_black_and_white = cv.filter2D(masked3_black_and_white, -1, kernel) 
 
         #temp test
         #masked3_initial = cv.imread(path2)
         #sharpened_black_and_white = cv.filter2D(masked3_initial, -1, kernel) 
 
-        path_black_white = ".\\box_images\\box"+str(counter)+"_"+"sharpen-BnW"+".jpg"
+        #path_black_white = ".\\box_images\\box"+str(counter)+"_"+"sharpen-BnW"+".jpg"
         #cv.imwrite(path_black_white, masked3_black_and_white)
-        cv.imwrite(path_black_white, sharpened_black_and_white)
+        #cv.imwrite(path_black_white, sharpened_black_and_white)
 
         # Rotational coding here
         # Assigning default variable values here
-        masked3_copy = Image.open(path_black_white)
+        #masked3_copy = Image.open(path_black_white)
+        masked3_copy = Image.open(temppath)
         masked3_rotated = None
         maxSimilarity = 0.0
         bestOutput = initial_bestOutput
@@ -591,8 +599,8 @@ if __name__ == "__main__":
             i = i + 1
             print("---------------------------------------------")
         print("Best Name:\n" + str(bestOutput)) #output the "best" name extracted from among all the rotated images for this bounding box
-        
-        if (bestOutput.iat[0,0] in non_names) or (bestOutput.iat[0,2] <= 0.40):
+        if (bestOutput.iat[0,0] in non_names) or (bestOutput.iat[0,2] <= 0.30):
+            noiseList.append((bestOutput.iat[0,0], bestOutput.iat[0,2], b, counter))
             print("-----Likely Noise/Non-name - Skipped-----")
         else: #If name is exising or is not "noise" due to low similarity
             bestNameList.append((bestOutput.iat[0,0], bestOutput.iat[0,2], b, counter))
@@ -610,14 +618,16 @@ if __name__ == "__main__":
     #merging frame2 and mask2 to make masked2 altered frame
     masked2 = cv.bitwise_and(frame2, frame2, mask=mask2)
     masked2copy = cv.bitwise_and(frame2, frame2, mask=mask2)
-    #TODO: edit masked2copy if "--showtext" argument is specified/true
+    
+    #edit masked2copy if "--showtext" argument is specified/true
     if (showthetext == True):
         for n, s, box, c in bestNameList:
             #cv.putText(image, 'OpenCV', org, font, fontScale, color, thickness, cv2.LINE_AA)
             cv.putText(masked2copy, str(str(c)+": "+n), (box[0], box[1]), cv.FONT_HERSHEY_SIMPLEX, 1, (255, 255, 255), 2, cv.LINE_AA)
-
+        for n, s, box, c in noiseList:
+            cv.putText(masked2copy, str(str(c)+": ~Noise~"), (box[0], box[1]), cv.FONT_HERSHEY_SIMPLEX, 1, (0, 0, 255), 2, cv.LINE_AA)
     #execute AccuracyChecker, if argument is present in run command
-    if (answerfilename!=""):
+    if (answerfilename != ""):
         answerList = convertTxtFileAnswerToList(answerfilename)
         runAccuracyChecker(bestNameListNameOnly, answerList)
 
